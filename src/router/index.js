@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import RestaurantsList from '@/components/RestaurantsList'
-import Menu from '@/components/RestaurantMenu'
+import RestaurantMenu from '@/components/RestaurantMenu'
 import Cart from '@/components/Cart'
 import MyOrder from '@/components/MyOrder'
 
@@ -40,7 +40,7 @@ export default new Router({
     // be redirected to this screen, which will show the order status in 
     // real time. **Dynamic route required**
     {
-      path: '/my=order',
+      path: '/my-order',
       name: 'MyOrder',
       component: MyOrder
     }

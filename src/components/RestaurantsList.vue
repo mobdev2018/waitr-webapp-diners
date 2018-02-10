@@ -3,6 +3,11 @@
 
 <script>
 
+// LiveKitchen connection via WebSockets
+import Vue from 'vue';
+import VueSocketio from 'vue-socket.io';
+import config from '../../config/config';
+
 export default {
   name: 'RestaurantsList',
   components: {},
@@ -11,7 +16,16 @@ export default {
     }
   },
 
-  created () {},
+  created () {
+    // Once the user is logged in, connect to the WebSockets server
+    if(localStorage.getItem('customer') !== null) {
+      const customer = JSON.parse(localStorage.customer);
+      if(customer.hasOwnProperty('userId')) {
+        // http://host?customerId={customerId}
+        Vue.use(VueSocketio, 'http://localhost:3000?customerId='+customer.userId);
+      }
+    }
+  },
 
   methods: {
   },

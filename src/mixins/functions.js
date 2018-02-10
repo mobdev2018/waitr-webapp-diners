@@ -23,7 +23,7 @@ export default {
           console.log(res);
         }
       }
-      this.showAlert('error', msg);
+      alert('error', msg);
     }
     
 	}

@@ -1,12 +1,26 @@
 <template>
-  <div class="loading" v-if="loading.still">
-    <clip-loader  
-      :color="loading.spinnerColor" 
-      :size="loading.spinnerSize"
-    >
-    </clip-loader>
-    <p class="loadingMsg">{{loading.msg}}</p>
+  <div class="container">
+    <div class="loading" v-if="loading.still">
+      <clip-loader  
+        :color="loading.spinnerColor" 
+        :size="loading.spinnerSize"
+      >
+      </clip-loader>
+      <p class="loadingMsg">{{loading.msg}}</p>
+    </div>
+    <div class="container" v-else>
+      <h1>{{menu.restaurantName}} - {{menu.menuName}}</h1>
+      <ul>
+        <li v-for="category in menu.categories">
+          <h3>{{category.name}}</h3>
+          <ul>
+            <li v-for="item in category.items">{{item.name}}</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   </div>
+
 </template>
 
 <script>

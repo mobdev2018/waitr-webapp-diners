@@ -8,7 +8,7 @@
       </clip-loader>
       <p class="loadingMsg">{{loading.msg}}</p>
     </div>
-    <ul>
+    <ul v-else>
       <!-- Each li should, upon click, show a dropdown menu of the restaurant's menus.
            For now, on click, we will automatically redirect the user to the
            restaurant's default menu (since we do not yet support multiple menus per restuarant)

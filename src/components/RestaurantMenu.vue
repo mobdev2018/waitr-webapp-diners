@@ -8,50 +8,49 @@
       </clip-loader>
       <p class="loadingMsg">{{loading.msg}}</p>
     </div>
-    <div class="panel-group" id="accordion" v-else>
-      <div v-for="category in menu.categories" class="panel panel-default">
-        <div class="panel-heading categoryPanelHeader">
-          <h4 class="panel-title">
-            <!-- Category name -->
-            <a
-              data-toggle="collapse"
-              data-parent="#accordion"
-              v-bind:href="'#' + category.categoryId"
-              >{{category.name}}
-            </a>
-          </h4>
-        </div>
-        <div
-          class="panel-collapse collapse"
-          v-bind:class="{'in': menu.categories.indexOf(category) == 0 && menu.categories[0].items.length > 0}"
-          v-bind:id="category.categoryId"
-        >
-          <!-- Each category is a collapsable panel, containing a table of the category's items -->
-          <div class="panel-body">
-            <table class="table">
-              <!-- Each item is a row (<tr>) in the table body (<tbody>). We have to pass the categories object in too, because we need the category index, which we get by using "categories.indexOf(category)" in the item component" -->
-              <tbody>
-                <tr v-for="item in category.items">
-                  <td class="col-xs-9">{{item.name}}</td>
-                  <td class="col-xs-2">{{item.price}}</td>
-                  <td class="col-xs-1"><span class="glyphicon glyphicon-plus-sign"></span></td>
-                </tr>
-              </tbody>
-            </table>
+    <div class="container" v-else>
+      <button class="backToRestaurants" v-on:click="backToRestaurants">
+        Back to restaurants...
+      </button>
+      <div class="panel-group" id="accordion">
+        <div v-for="category in menu.categories" class="panel panel-default">
+          <div class="panel-heading categoryPanelHeader">
+            <h4 class="panel-title">
+              <!-- Category name -->
+              <a
+                data-toggle="collapse"
+                data-parent="#accordion"
+                v-bind:href="'#' + category.categoryId"
+                >{{category.name}}
+              </a>
+            </h4>
+          </div>
+          <div
+            class="panel-collapse collapse"
+            v-bind:class="{'in': menu.categories.indexOf(category) == 0 && menu.categories[0].items.length > 0}"
+            v-bind:id="category.categoryId"
+          >
+            <!-- Each category is a collapsable panel, containing a table of the category's items -->
+            <div class="panel-body">
+              <table class="table">
+                <!-- Each item is a row (<tr>) in the table body (<tbody>). We have to pass the categories object in too, because we need the category index, which we get by using "categories.indexOf(category)" in the item component" -->
+                <tbody>
+                  <tr v-for="item in category.items">
+                    <td class="col-xs-9">{{item.name}}</td>
+                    <td class="col-xs-2">{{item.price}}</td>
+                    <td class="col-xs-1">
+                      <span 
+                        class="glyphicon glyphicon-plus-sign"
+                        v-on:click="addItemToCart(item)"  
+                      ></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-        <!-- 
-        <h1>{{menu.restaurantName}} - {{menu.menuName}}</h1>
-        <ul>
-          <li v-for="category in menu.categories">
-            <h3>{{category.name}}</h3>
-            <ul>
-              <li v-for="item in category.items">{{item.name}}</li>
-            </ul>
-          </li>
-        </ul>
-        -->
     </div>
   </div>
 
@@ -89,6 +88,8 @@ export default {
       console.log('Cannot get menu: The route parameter menuId is not set!');
     } else {
       const menuId = this.$route.params.menuId;
+      // We keep track of the menu the user is viewing, so that if he leaves the page, we can redirect him back to it
+      localStorage.setItem('activeMenuId', menuId);
       this.$http.get('menu/'+menuId, {
         headers: {Authorization: JSON.parse(localStorage.customer).token}
       }).then((res) => {
@@ -103,9 +104,27 @@ export default {
   },
 
   methods: {
+    addItemToCart(item) {
+      // Add the item to the cart state
+      this.$store.commit('addItemToCart', {
+        itemId: item.itemId,
+        name: item.name,
+        price: item.price 
+      });
+      // Persist the item to local storage, in case the user reloads the page
+      console.log(JSON.stringify(this.liveCart));
+    },
+
+    backToRestaurants() {
+      localStorage.removeItem('activeMenuId');
+      this.$router.push('/restaurants');
+    }
   },
 
   computed: {
+    liveCart() {
+      return this.$store.getters.getLiveCart;
+    }
   }
 }
 </script>
@@ -204,8 +223,10 @@ export default {
     box-shadow: none !important;
   }
 
-  a {
-    margin-left: 15px;
+  .backToRestaurants {
+    margin-top: 20px;
+    font-size: 20px;
   }
+
 
 </style>

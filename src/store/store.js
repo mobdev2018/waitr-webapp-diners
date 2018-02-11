@@ -23,18 +23,7 @@ export default new Vuex.Store({
 		auth: {
 			isUserAuthenticated: (localStorage.isAuth == true || localStorage.isAuth == 'true')
 		},
-		restaurants: [],
-		menu: {
-			menuId: null,
-			name: null,
-			categories: []
-		},
-		cart: {
-			// Set schema
-		},
-		order: {
-			// Set schema
-		}
+		cart: (localStorage.cart) || { totalPrice: 0.00, items: [] }
 	},
 	mutations: {
 		/**
@@ -48,35 +37,25 @@ export default new Vuex.Store({
 		},
 
 		/**
-			Restaurants
-		**/
-
-		/**
-			Menu
-		**/
-		setMenu(state, menu) {
-			state.menu = menu;
-		},
-
-		/**
-			Order
-		**/
-		setLiveOrder(state, order) {
-			state.order = order;
-		},
-
-		updateOrderStatus(state, order) {
-			// Different statuses require different actions
-		},
-
-		updateTimeSinceOrderPlaced(state) {
-			order.timeAgo = moment(orders[i].time).utc().fromNow();
-		},
-
-		/**
 			Cart
 		**/
+		addItemToCart(state, item) {
+			state.cart.items.push(item);
+			var totalPrice = parseFloat(state.cart.totalPrice) + parseFloat(item.price); 
+			totalPrice = totalPrice.toFixed(2);
+			state.cart.totalPrice = totalPrice;
+		},
 
+		removeItemFromCart(state, item) {
+			var index = state.cart.items.indexOf(item);
+			if (index === -1) {
+				console.log('Error removing item from cart: item could not be found in cart.');
+			} else {
+				array.splice(index, 1);
+			}
+			var totalPrice = parseFloat(state.cart.totalPrice) - parseFloat(item.price); 
+			totalPrice = totalPrice.toFixed(2);
+		}
 	},
 	actions: {},
 	getters: {
@@ -86,24 +65,12 @@ export default new Vuex.Store({
 		isUserAuthenticated(state) {
 			return state.auth.isUserAuthenticated;
 		},
-		
-		/**
-			Restaurants
-		**/
-
-		/**
-			Menu
-		**/
-
-		/**
-			Order
-		**/
-		getLiveOrder(state) {
-			return state.order;
-		},
 
 		/**
 			Cart
 		**/
+		getLiveCart(state) {
+			return state.cart;
+		}
 	}
 });

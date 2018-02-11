@@ -67,6 +67,13 @@ export default {
       }
     }
 
+    // This helps us to keep track of which menu the user last viewed (is ordering from)
+    if(localStorage.getItem('activeMenuId') !== null) {
+      // User was viewing a menu, navigated away from it, then revisits restaurants list: redirect to the menu
+      const activeMenuId = localStorage.getItem('activeMenuId');
+      this.$router.push('/menu/'+activeMenuId);
+    }
+
     // Get the list of restaurants
     this.$http.get('restaurant/', {
       headers: {Authorization: JSON.parse(localStorage.customer).token}

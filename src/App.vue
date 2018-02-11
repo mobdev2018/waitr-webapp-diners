@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <banner></banner>
-    <div class="container">
+    <div class="container-fluid">
       <!-- Main page content -->
       <router-view/>
     </div>
@@ -55,7 +55,6 @@ export default {
 <style>
 
   #app {
-    font-family: Helvetica, 'Avenir', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
@@ -63,8 +62,17 @@ export default {
     margin-top: 50px;
   }
 
+  @font-face {
+    font-family: 'grotesque';
+    src: url("./fonts/grotesque.otf");
+  }
+
   .container-fluid {
     padding: 0 !important;
+  }
+
+  body {
+    background-color: #0a0a0a !important;
   }
 
 </style>

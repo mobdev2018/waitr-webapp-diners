@@ -40,6 +40,7 @@ export default {
     background-color: #3a3a3a;
     /*padding: 0 15px;*/
     font-family: 'grotesque';
+    padding-bottom: 20px !important;
   }
 
   #navbar .navbar-nav li a {

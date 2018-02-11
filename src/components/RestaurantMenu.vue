@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="loading" v-if="loading.still">
       <clip-loader  
         :color="loading.spinnerColor" 
@@ -8,16 +8,50 @@
       </clip-loader>
       <p class="loadingMsg">{{loading.msg}}</p>
     </div>
-    <div class="container" v-else>
-      <h1>{{menu.restaurantName}} - {{menu.menuName}}</h1>
-      <ul>
-        <li v-for="category in menu.categories">
-          <h3>{{category.name}}</h3>
-          <ul>
-            <li v-for="item in category.items">{{item.name}}</li>
-          </ul>
-        </li>
-      </ul>
+    <div class="panel-group" id="accordion" v-else>
+      <div v-for="category in menu.categories" class="panel panel-default">
+        <div class="panel-heading categoryPanelHeader">
+          <h4 class="panel-title">
+            <!-- Category name -->
+            <a
+              data-toggle="collapse"
+              data-parent="#accordion"
+              v-bind:href="'#' + category.categoryId"
+              >{{category.name}}
+            </a>
+          </h4>
+        </div>
+        <div
+          class="panel-collapse collapse"
+          v-bind:class="{'in': menu.categories.indexOf(category) == 0 && menu.categories[0].items.length > 0}"
+          v-bind:id="category.categoryId"
+        >
+          <!-- Each category is a collapsable panel, containing a table of the category's items -->
+          <div class="panel-body">
+            <table class="table">
+              <!-- Each item is a row (<tr>) in the table body (<tbody>). We have to pass the categories object in too, because we need the category index, which we get by using "categories.indexOf(category)" in the item component" -->
+              <tbody>
+                <tr v-for="item in category.items">
+                  <td class="col-xs-9">{{item.name}}</td>
+                  <td class="col-xs-2">{{item.price}}</td>
+                  <td class="col-xs-1"><span class="glyphicon glyphicon-plus-sign"></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+        <!-- 
+        <h1>{{menu.restaurantName}} - {{menu.menuName}}</h1>
+        <ul>
+          <li v-for="category in menu.categories">
+            <h3>{{category.name}}</h3>
+            <ul>
+              <li v-for="item in category.items">{{item.name}}</li>
+            </ul>
+          </li>
+        </ul>
+        -->
     </div>
   </div>
 
@@ -94,6 +128,84 @@ export default {
   .loadingMsg {
     font-size: 16px;
     color: #469ada;
+  }
+
+  .panel-group {
+    margin-top: 20px;
+  }
+
+  .accordion {
+    border: 0 !important;
+    padding: 0 !important;
+  }
+
+  .panel {
+    border: none !important;
+  }
+
+  .panel-body {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-bottom: 0 !important;
+  }
+
+  .categoryPanelHeader {
+    background-color: #151515 !important;
+    color: #469ada !important;
+    padding-right: 3px;
+  }
+
+  .panel-title {
+    height: 17.6px;
+  }
+
+  table {
+    border: none !important;
+    margin-bottom: 0 !important;
+    font-family: 'grotesque';
+    color: #fff;
+  }
+
+  thead {
+    background-color: #262626;
+  }
+
+  tbody {
+    background-color: #3a3a3a;
+  }
+
+  .table>tbody>tr>td {
+    border-top: 0;
+    border-bottom: 1px solid #151515;
+    text-align: left;
+  }
+
+  .name, .price {
+    border-right: 1px solid #151515 !important;
+  }
+
+  .glyphicon {
+    padding-right: 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .categoryName {
+    background: none;
+    border: none;
+    text-align: center;
+  }
+
+  .categoryName:focus {
+    outline: none;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  a {
+    margin-left: 15px;
   }
 
 </style>

@@ -84,6 +84,7 @@ export default {
   },
 
   created () {
+    console.log(this.liveCart);
     if(!this.$route.params.menuId) {
       console.log('Cannot get menu: The route parameter menuId is not set!');
     } else {
@@ -104,15 +105,33 @@ export default {
   },
 
   methods: {
-    addItemToCart(item) {
+    addItemToCart(i) {
+      const item = {
+        itemId: i.itemId,
+        name: i.name,
+        price: i.price 
+      }
       // Add the item to the cart state
-      this.$store.commit('addItemToCart', {
-        itemId: item.itemId,
-        name: item.name,
-        price: item.price 
-      });
+      this.$store.commit('addItemToCart', item);
       // Persist the item to local storage, in case the user reloads the page
-      console.log(JSON.stringify(this.liveCart));
+      if(localStorage.getItem('cart') !== null) {
+        // Convert the string to an object, then add the new item
+        const cartObj = JSON.parse(localStorage.cart);
+        cartObj.items.push(item);
+        // Update total price
+        var totalPrice = parseFloat(cartObj.totalPrice) + parseFloat(item.price); 
+        totalPrice = totalPrice.toFixed(2);
+        cartObj.totalPrice = totalPrice;
+        // Conver the updated cart object back to a string and save it to local storage
+        const cartString = JSON.stringify(cartObj);
+        localStorage.cart = cartString;
+      } else {
+        // If the cart is empty, add it to local storage, containing the first item
+        localStorage.cart = JSON.stringify({
+          totalPrice: parseFloat(item.price).toFixed(2), 
+          items: [item]
+        });
+      }
     },
 
     backToRestaurants() {

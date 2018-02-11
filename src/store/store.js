@@ -23,7 +23,8 @@ export default new Vuex.Store({
 		auth: {
 			isUserAuthenticated: (localStorage.isAuth == true || localStorage.isAuth == 'true')
 		},
-		cart: (localStorage.cart) || { totalPrice: 0.00, items: [] }
+		// If the cart is set in local storage, the state should reflect it. Else, set the cart state to its default value
+		cart: (localStorage.getItem('cart') !== null) ? JSON.parse(localStorage.cart) : { totalPrice: parseFloat(0.00).toFixed(2), items: [] }
 	},
 	mutations: {
 		/**

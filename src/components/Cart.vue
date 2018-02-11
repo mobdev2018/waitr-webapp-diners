@@ -12,7 +12,6 @@ export default {
   },
 
   created () {
-    console.log(JSON.stringify(this.liveCart));
     // If the cart is empty, redirect the user to the restaurants list
     if(this.liveCart.items.length < 1) {
       this.$router.push('/restaurants');

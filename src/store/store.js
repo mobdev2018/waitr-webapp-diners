@@ -24,7 +24,10 @@ export default new Vuex.Store({
 			isUserAuthenticated: (localStorage.isAuth == true || localStorage.isAuth == 'true')
 		},
 		// If the cart is set in local storage, the state should reflect it. Else, set the cart state to its default value
-		cart: (localStorage.getItem('cart') !== null) ? JSON.parse(localStorage.cart) : { totalPrice: parseFloat(0.00).toFixed(2), items: [] }
+		cart: (localStorage.getItem('cart') !== null) ? JSON.parse(localStorage.cart) : { totalPrice: parseFloat(0.00).toFixed(2), items: [] },
+
+		// The user's live order, which is set as soon as an order is processed
+		order: {so: 's'}
 	},
 	mutations: {
 		/**
@@ -72,6 +75,13 @@ export default new Vuex.Store({
 		**/
 		getLiveCart(state) {
 			return state.cart;
+		},
+
+		/**
+			Order
+		**/
+		getLiveOrder(state) {
+			return state.order;
 		}
 	}
 });

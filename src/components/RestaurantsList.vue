@@ -34,6 +34,7 @@ import config from '../../config/config';
 
 // Dependencies
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+import lodash from 'lodash';
 
 // Mixins
 import functions from '../mixins/functions';
@@ -67,11 +68,16 @@ export default {
       }
     }
 
-    // This helps us to keep track of which menu the user last viewed (is ordering from)
-    if(localStorage.getItem('activeMenuId') !== null) {
-      // User was viewing a menu, navigated away from it, then revisits restaurants list: redirect to the menu
-      const activeMenuId = localStorage.getItem('activeMenuId');
-      this.$router.push('/menu/'+activeMenuId);
+    // If the user has already placed an order, do not allow him to visit the restauraunts list
+    if(!_.isEmpty(this.liveOrder)) {
+      this.$router.push('/my-order');
+    } else {
+      // This helps us to keep track of which menu the user last viewed (is ordering from)
+      if(localStorage.getItem('activeMenuId') !== null) {
+        // User was viewing a menu, navigated away from it, then revisits restaurants list: redirect to the menu
+        const activeMenuId = localStorage.getItem('activeMenuId');
+        this.$router.push('/menu/'+activeMenuId);
+      }
     }
 
     // Get the list of restaurants
@@ -91,6 +97,9 @@ export default {
   },
 
   computed: {
+    liveOrder() {
+      return this.$store.getters.getLiveOrder;
+    }
   }
 }
 </script>

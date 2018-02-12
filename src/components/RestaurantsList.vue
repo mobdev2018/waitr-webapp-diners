@@ -78,19 +78,19 @@ export default {
         const activeMenuId = localStorage.getItem('activeMenuId');
         this.$router.push('/menu/'+activeMenuId);
       }
-    }
 
-    // Get the list of restaurants
-    this.$http.get('restaurant/', {
-      headers: {Authorization: JSON.parse(localStorage.customer).token}
-    }).then((res) => {
-      if(res.status == 200 || res.status == 201) {
-        this.loading.still = false;
-        this.restaurants = res.body.data;
-      }
-    }).catch((res) => {
-      this.handleApiError(res);
-    });
+      // Get the list of restaurants
+      this.$http.get('restaurant/', {
+        headers: {Authorization: JSON.parse(localStorage.customer).token}
+      }).then((res) => {
+        if(res.status == 200 || res.status == 201) {
+          this.loading.still = false;
+          this.restaurants = res.body.data;
+        }
+      }).catch((res) => {
+        this.handleApiError(res);
+      });
+    }
   },
 
   methods: {

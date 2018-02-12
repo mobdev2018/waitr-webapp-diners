@@ -27,7 +27,7 @@ export default new Vuex.Store({
 		cart: (localStorage.getItem('cart') !== null) ? JSON.parse(localStorage.cart) : { totalPrice: parseFloat(0.00).toFixed(2), items: [] },
 
 		// The user's live order, which is set as soon as an order is processed
-		order: {so: 's'}
+		order: {}
 	},
 	mutations: {
 		/**

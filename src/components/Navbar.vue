@@ -1,17 +1,31 @@
 <template>
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default navbar-fixed-bottom">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <p class="navbar-brand"></p>
+    <div v-bind:class="{'active': $route.path == '/'}" class="navbar-header">
+      <router-link class="navbar-brand" to="/my-order">
+        waitr
+      </router-link>
     </div>
-  </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-left">
+        <li>
+          <router-link to="/restaurants">Restaurants</router-link>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <router-link to="/cart">Cart</router-link>
+        </li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container-fluid -->
 </nav>
 </template>
 
 <script>
 
 export default {
-  name: 'Banner',
+  name: 'Navbar',
   components: {},
   data() {
     return {
@@ -30,8 +44,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-   @font-face {
+  @font-face {
     font-family: 'grotesque';
     src: url("../fonts/grotesque.otf");
   }
@@ -40,7 +53,6 @@ export default {
     background-color: #3a3a3a;
     /*padding: 0 15px;*/
     font-family: 'grotesque';
-    padding-bottom: 20px !important;
   }
 
   #navbar .navbar-nav li a {
@@ -63,7 +75,6 @@ export default {
 
   .navbar {
     border: none;
-    border-bottom: 4px solid #469ada;
   }
 
   .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
@@ -75,16 +86,5 @@ export default {
     cursor: pointer;
   }
 
-  .navbar-brand {
-    color: #469ada;
-    float: none;
-    font-size: 30px;    
-  }
-
-  .navbar-header {
-    float: left;
-    text-align: center;
-    width: 100%;
-  }
 
 </style>

@@ -5,6 +5,7 @@
       <!-- Main page content -->
       <router-view/>
     </div>
+    <navbar></navbar>
   </div>
 </template>
 
@@ -17,11 +18,13 @@ import config from '../config/config';
 
 // Global components
 import Banner from './components/Banner';
+import Navbar from './components/Navbar';
 
 export default {
   name: 'app',
   components: {
-      'banner': Banner
+      'banner': Banner,
+      'navbar': Navbar
   },
 
   created() {

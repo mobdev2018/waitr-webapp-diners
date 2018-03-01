@@ -16,7 +16,7 @@
       <li v-for="restaurant in restaurants">
         <router-link :to="{ 
           name: 'RestaurantMenu', 
-          params: { menuId: restaurant.menus[0].menuId } 
+          params: { restaurantId: restaurant.restaurantId, menuId: restaurant.menus[0].menuId } 
         }">
           {{restaurant.name}} ({{restaurant.menus[0].name}})
         </router-link>
@@ -59,38 +59,35 @@ export default {
   },
 
   created () {
+    // TODO: only connect if not already connected (also do this in app.vue and upon login, not here)
     // Once the user is logged in, connect to the WebSockets server
-    if(localStorage.getItem('customer') !== null) {
-      const customer = JSON.parse(localStorage.customer);
-      if(customer.hasOwnProperty('userId')) {
-        // http://host?customerId={customerId}
-        Vue.use(VueSocketio, 'http://localhost:3000?customerId='+customer.userId);
+    if(localStorage.getItem('user') !== null) {
+      const user = JSON.parse(localStorage.user);
+      if(user.hasOwnProperty('userId')) {
+        // http://host?customerId={userId}
+        // TODO: change to ?dinerId; change socketType to dinerId; change table names to socketsDiners and socketsRestaurantDiners
+        Vue.use(VueSocketio, 'http://localhost:3000?customerId='+user.userId);
       }
     }
 
-    // If the user has already placed an order, do not allow him to visit the restauraunts list
-    if(!_.isEmpty(this.liveOrder)) {
-      this.$router.push('/my-order');
-    } else {
-      // This helps us to keep track of which menu the user last viewed (is ordering from)
-      if(localStorage.getItem('activeMenuId') !== null) {
-        // User was viewing a menu, navigated away from it, then revisits restaurants list: redirect to the menu
-        const activeMenuId = localStorage.getItem('activeMenuId');
-        this.$router.push('/menu/'+activeMenuId);
-      }
-
-      // Get the list of restaurants
-      this.$http.get('restaurant/', {
-        headers: {Authorization: JSON.parse(localStorage.customer).token}
-      }).then((res) => {
-        if(res.status == 200 || res.status == 201) {
-          this.loading.still = false;
-          this.restaurants = res.body.data;
-        }
-      }).catch((res) => {
-        this.handleApiError(res);
-      });
+    // If the user has items in his cart, remove the cart completely if he vists the restaurants list
+    if(localStorage.getItem('cart') !== null) {
+      localStorage.removeItem('cart');
+      this.$store.commit('resetCart');
     }
+
+    // Get the list of restaurants
+    this.$http.get('restaurant', {
+      headers: {Authorization: JSON.parse(localStorage.user).token}
+    }).then((res) => {
+      console.log(res);
+      if(res.status == 200 || res.status == 201) {
+        this.loading.still = false;
+        this.restaurants = res.body.data;
+      }
+    }).catch((res) => {
+      this.handleApiError(res);
+    });
   },
 
   methods: {

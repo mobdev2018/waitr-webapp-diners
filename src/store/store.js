@@ -21,10 +21,15 @@ const statuses = {
 export default new Vuex.Store({
 	state: {
 		auth: {
-			isUserAuthenticated: (localStorage.isAuth == true || localStorage.isAuth == 'true')
+			isUserAuthenticated: (localStorage.isAuth == 'true')
 		},
 		// If the cart is set in local storage, the state should reflect it. Else, set the cart state to its default value
-		cart: (localStorage.getItem('cart') !== null) ? JSON.parse(localStorage.cart) : { totalPrice: parseFloat(0.00).toFixed(2), items: [] },
+		cart: (localStorage.getItem('cart') !== null) ? JSON.parse(localStorage.cart) : { 
+			restaurantId: '',
+			menuId: '',
+			totalPrice: parseFloat(0.00).toFixed(2), 
+			items: [] 
+		},
 
 		// The user's live order, which is set as soon as an order is processed
 		order: {}
@@ -43,6 +48,23 @@ export default new Vuex.Store({
 		/**
 			Cart
 		**/
+		setCart(state, cart) {
+			state.cart.restaurantId = cart.restaurantId;
+			state.cart.menuId = cart.menuId;
+			state.cart.items = cart.items;
+
+			var totalPrice = parseFloat(state.cart.totalPrice) + parseFloat(cart.totalPrice); 
+			totalPrice = totalPrice.toFixed(2);
+			state.cart.totalPrice = totalPrice;
+		},
+
+		resetCart(state) {
+			state.cart.restaurantId = '';
+			state.cart.menuId = '';
+			state.cart.totalPrice = parseFloat(0.00).toFixed(2)
+			state.cart.items = [];
+		},
+
 		addItemToCart(state, item) {
 			state.cart.items.push(item);
 			var totalPrice = parseFloat(state.cart.totalPrice) + parseFloat(item.price); 

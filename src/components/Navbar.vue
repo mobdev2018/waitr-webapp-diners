@@ -2,11 +2,11 @@
 <nav class="navbar navbar-default navbar-fixed-bottom">
   <div class="container-fluid">
     <div v-bind:class="{'active': $route.path == '/'}" class="navbar-header">
-      <router-link class="navbar-brand" to="/my-order">
+      <router-link class="navbar-brand" to="/order">
         waitr
       </router-link>
     </div>
-    <div id="navbar" class="navbar-collapse collapse">
+    <div id="navbar">
       <ul class="nav navbar-nav navbar-left">
         <li>
           <router-link to="/restaurants">Restaurants</router-link>

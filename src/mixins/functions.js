@@ -23,7 +23,7 @@ export default {
           console.log(res);
         }
       }
-      alert('error', msg);
+      console.log('ERROR: ' + JSON.stringify(res.body.errorKey));
     }
     
 	}

@@ -28,7 +28,7 @@ export default new Router({
     // For now, we will auto-redirect users from /restaurants to /menu
     // This will show the menu of the first trial restaurant. **Dynamic route required**
     {
-      path: '/menu/:menuId',
+      path: '/r/:restaurantId/m/:menuId',
       name: 'RestaurantMenu',
       component: RestaurantMenu
     },
@@ -44,7 +44,7 @@ export default new Router({
     // be redirected to this screen, which will show the order status in 
     // real time. **Dynamic route required**
     {
-      path: '/my-order',
+      path: '/order/:orderId',
       name: 'MyOrder',
       component: MyOrder
     }

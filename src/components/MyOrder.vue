@@ -16,20 +16,17 @@ export default {
   },
 
   created () {
-    // If the user hasn't placed an order yet, redirect him to...
-    if(_.isEmpty(this.liveOrder)) {
-      // ... his cart (if he has already added something to it)...
-      if(this.liveCart.items.length > 0) {
-        this.$router.push('/cart');
-      } else {
-        // ...the restaurants list (if his cart is empty)
-        this.$router.push('/restaurants');
-      }
-    }
+
     // Call API for the user's live order
+
+    // Listen for order-status update events
+
   },
 
   methods: {
+    placeOrder() {
+      // Get order state
+    }
   },
 
   computed: {

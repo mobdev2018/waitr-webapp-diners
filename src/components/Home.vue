@@ -291,11 +291,11 @@ export default {
 
     logUserIn(isLoginAutomatic=false) {
       if(this.form.login.email.value != '' && this.form.login.password.value != '') {
-        this.$http.get("auth/login?email="+this.form.login.email.value+"&password="+this.form.login.password.value, {
+        this.$http.get("auth/login/d?email="+this.form.login.email.value+"&password="+this.form.login.password.value, {
         }).then((res) => {
           if(res.status == 200 || res.status == 201) {
             // Add data to local storage
-            localStorage.setItem('customer', JSON.stringify(res.body.data.user));
+            localStorage.setItem('user', JSON.stringify(res.body.data.user));
             localStorage.setItem('isAuth', true);
             // Reset the forms
             this.form = JSON.parse(JSON.stringify(this.formDefault));
@@ -321,7 +321,7 @@ export default {
       if(!this.errors.any() && this.inputs.hasHadFocus.length > 0) {
         // Make the API call
         this.$http.post('user/create', {
-          userType: 'restaurateur',
+          userType: 'diner',
           firstName: this.form.signup.firstName.value,
           lastName: this.form.signup.lastName.value,
           email: this.form.signup.email.value,

@@ -1,11 +1,9 @@
 <template>
   <div id="app">
-    <banner></banner>
     <div class="container-fluid">
       <!-- Main page content -->
       <router-view/>
     </div>
-    <navbar></navbar>
   </div>
 </template>
 
@@ -74,8 +72,6 @@ export default {
     padding: 0 !important;
   }
 
-  body {
-    background-color: #0a0a0a !important;
-  }
+  
 
 </style>

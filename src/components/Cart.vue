@@ -1,12 +1,27 @@
 <template>
-  <button v-on:click="placeOrder()">Place order!</button>
+  <div class="container">
+    <div class="loading" v-if="loading.still">
+      <clip-loader  
+        :color="loading.spinnerColor" 
+        :size="loading.spinnerSize"
+      >
+      </clip-loader>
+      <p class="loadingMsg">{{loading.msg}}</p>
+    </div>
+    <button v-on:click="placeOrder()" v-else>Place order!</button>
+  </div>
 </template>
 
 <script>
 
+// Dependencies
+import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+
 export default {
   name: 'Cart',
-  components: {},
+  components: {
+    'clip-loader': ClipLoader
+  },
   data() {
     return {
       order: {
@@ -21,81 +36,108 @@ export default {
           time: new Date().getTime()
         },
         items: []
+      },
+      loading: {
+        still: false,
+        spinnerColor: '#469ada',
+        spinnerSize: '70px',
+        msg: ''
+      },
+      orderStatuses: {
+        sentToServer: 50,
+        receivedByServer: 100,
+        sentToKitchen: 200,
+        receivedByKitchen: 300,
+        acceptedByKitchen: 400,
+        rejectedByKitchen: 999,
+        enRouteToCustomer: 1000,
+        // receivedByCustomer: 2000 // would be set by deliverer of food
+        // returnedByCustomer: 666,
+        // eaten: 500 // May be set once the user has sent feedback
       }
     }
   },
 
   created () {
     // 1) Render a page which shows the breakdown of the user's order, with the ability to add/remove items and go back to the menu
-    // we can go back to the menu directly by getting this.liveCart.restaurantId and this.liveCart.menuId
-    // There should also be a Place Order button 
 
-    // 2) Send the order, after being able to modify it, to the API (just sent the mock order for now);
-    // 3) Let the user specify their table number
+    // 2) Let the user specify their table number
 
-    // THEN SEND THE REAL ORDER (and on the server, check each order exists in the database, check for discrepancies etc.)
+    // 3) THEN SEND THE REAL ORDER (and on the server, check each order exists in the database, check for discrepancies etc.)
 
-    // 4) Start the spinner wheel as soon as the order is sent, and wait for a receipt confirmation from the server
-    // 5) Upon receiving the confirmation, update the status of the order state, and redirect the user to the order page
+    this.$options.sockets['orderStatusUpdated'] = (order) => {
+      // this.$store.commit('updateOrderStatus', order);
+      // this.showAlert('success', this.successMsg[order.status]);
+      // Stop the spinner
 
-    // 6) On the order page, we just need to: a) listen for order-status updates; b) make an on-load call to the API for the 
-    // up-to-date state of the order (mainly we are interested in the status
+      // If status is "receivedByServer", update the loading.msg
+      if(order.status == this.orderStatuses.receivedByServer) {
+        console.log('received by server: ' + order.status);
+        this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
+
+      } else if(order.status == this.orderStatuses.receivedByKitchen) {
+        console.log('received by server: ' + order.status);
+        this.loading.msg = 'Your order has been received by the restaurant. We\'ll let you know as soon as they respond.';
+        // Once the restaurant has received the order, redirect user to myorder page
+        this.loading.msg = ''
+        this.loading.still = false;
+        this.$router.push({ name: 'MyOrder', params: {orderId: 'x9Sjd7s'} });
+      }
+    }
   },
 
   methods: {
     placeOrder() {
-      // TODO: Get cart state (order items)
-      // TODO: Compile the order here, by adding it to the state
+      // First check if the cart has any items
+      if(this.liveCart.items.length < 1) {
+        console.log('Err: the cart is empty! You can\'t place an empty order!');
+      } else {
+        // TODO: Get cart state (order items)
+        // TODO: Compile the order here, by adding it to the state
 
-      // Get restaurantId
-      if(localStorage.getItem('activeRestaurantId') === null) {
-        console.log('Cannot get restaurant: The route parameter restaurantId is not set!');
+        // Mock order
+        const items = [
+          //{
+          //  itemId: 'asdasd3',
+          //  name: 'Fish and Chips',
+          //  price: 8.50
+          //},
+          {
+            itemId: 'ByukFl6Rb',
+            name: 'Serloin steak',
+            price: 11.00
+          },
+          {
+            itemId: 'HyjJvthAW',
+            name: 'Prawn cocktail',
+            price: 4.50
+          },
+          //{
+          //  itemId: 'Hy0gdK2R-',
+          //  name: '6 chicken wings',
+          //  price: 5.00
+          //}
+        ];
+        console.log(this.liveCart)
+        this.$socket.emit('newOrder', {
+          headers: {
+            token: JSON.parse(localStorage.user).token
+          },
+          metaData: {
+            // TODO: change to dinerId (update on server and in restaurant web app)
+            customerId: JSON.parse(localStorage.user).userId,
+            restaurantId: this.liveCart.restaurantId,
+            tableNo: 8,
+            price: this.liveCart.totalPrice,
+            time: new Date().getTime()
+          },
+          items: items // this.liveCart.items
+        });
+
+        // Then set the spinner to sending order to server
+        this.loading.msg = 'Processing your order...'
+        this.loading.still = true;
       }
-
-      // Mock order
-      const items = [
-        //{
-        //  itemId: 'asdasd3',
-        //  name: 'Fish and Chips',
-        //  price: 8.50
-        //},
-        {
-          itemId: 'ByukFl6Rb',
-          name: 'Serloin steak',
-          price: 11.00
-        },
-        {
-          itemId: 'HyjJvthAW',
-          name: 'Prawn cocktail',
-          price: 4.50
-        },
-        //{
-        //  itemId: 'Hy0gdK2R-',
-        //  name: '6 chicken wings',
-        //  price: 5.00
-        //}
-      ];
-
-      this.$socket.emit('newOrder', {
-        headers: {
-          token: JSON.parse(localStorage.user).token
-        },
-        metaData: {
-          // TODO: change to dinerId (update on server and in restaurant web app)
-          customerId: JSON.parse(localStorage.user).userId,
-          restaurantId: this.liveCart.restaurantId,
-          tableNo: 8,
-          price: this.liveCart.totalPrice,
-          time: new Date().getTime()
-        },
-        items: items // this.liveCart.items
-      });
-      // Then set the spinner to sending order to server
-
-      // Outside this function, listen for orderStatusUpdates. Once received, set the orderid an status in store
-      // and redirect the user to the myorder page once the orderId and status is returned
-      // const orderId = 'x9Sjd7s';
-      this.$router.push({ name: 'MyOrder', params: {orderId: 'x9Sjd7s'} });
     }
   },
 
@@ -113,6 +155,18 @@ export default {
   @font-face {
     font-family: 'grotesque';
     src: url("../fonts/grotesque.otf");
+  }
+
+  .loading {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+  }
+
+  .loadingMsg {
+    font-size: 16px;
+    color: #469ada;
   }
 
 </style>

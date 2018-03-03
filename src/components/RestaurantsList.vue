@@ -59,17 +59,6 @@ export default {
   },
 
   created () {
-    // TODO: only connect if not already connected (also do this in app.vue and upon login, not here)
-    // Once the user is logged in, connect to the WebSockets server
-    if(localStorage.getItem('user') !== null) {
-      const user = JSON.parse(localStorage.user);
-      if(user.hasOwnProperty('userId')) {
-        // http://host?customerId={userId}
-        // TODO: change to ?dinerId; change socketType to dinerId; change table names to socketsDiners and socketsRestaurantDiners
-        Vue.use(VueSocketio, 'http://localhost:3000?customerId='+user.userId);
-      }
-    }
-
     // If the user has items in his cart, remove the cart completely if he vists the restaurants list
     if(localStorage.getItem('cart') !== null) {
       localStorage.removeItem('cart');

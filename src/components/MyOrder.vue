@@ -1,5 +1,8 @@
 <template>
-  <h1>My Orders</h1>
+  <div>
+    <h1>My Orders</h1>
+    <p>{{orderStatusMsg}}</p>
+  </div>
 </template>
 
 <script>
@@ -12,21 +15,49 @@ export default {
   components: {},
   data() {
     return {
+      orderStatusMsg: '',
+
+      orderStatuses: {
+        acceptedByKitchen: {
+          code: 400,
+          msg: 'Woohoo! Your order has been accepted. We\'ll let you know when it\'s on its way.',
+          iconPath: ''
+        },
+        rejectedByKitchen: {
+          code: 999,
+          msg: 'Bad news! Your order has been rejected. A member of staff will be over to speak to you shortly.',
+          iconPath: ''
+        },
+        enRouteToCustomer: {
+          code: 1000,
+          msg: 'Woohoo! Your order is on it\'s way!',
+          iconPath: ''
+        }
+      }
     }
   },
 
   created () {
+    // Call API for the user's live order (set the order state)
 
-    // Call API for the user's live order
+    // On refresh, we need to update the message according to the live order state (specifically the status)
 
-    // Listen for order-status update events
-
+    // Listen for updates to the order's status
+    this.$options.sockets['orderStatusUpdated'] = (order) => {
+      console.log('orderStatus myOrder: ' + order.status);
+      // Here we handle all statuses which represent a response from the restaurant (400, 999, 1000)
+      for (var s in this.orderStatuses) {
+       console.log(s);
+       if(this.orderStatuses[s].code == order.status) {
+          this.orderStatusMsg = this.orderStatuses[s].msg;
+          break;
+       }
+       // TODO: handle unexpected order status
+    }
+    }
   },
 
   methods: {
-    placeOrder() {
-      // Get order state
-    }
   },
 
   computed: {

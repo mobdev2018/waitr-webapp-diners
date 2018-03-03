@@ -161,6 +161,11 @@
 
 <script>
 
+// LiveKitchen connection via WebSockets
+import Vue from 'vue';
+import VueSocketio from 'vue-socket.io';
+import config from '../../config/config';
+
 // Events bus
 import { bus } from '../main';
 
@@ -297,6 +302,15 @@ export default {
             // Add data to local storage
             localStorage.setItem('user', JSON.stringify(res.body.data.user));
             localStorage.setItem('isAuth', true);
+            // Connect to LiveKitchen
+            if(localStorage.getItem('user') !== null) {
+              const user = JSON.parse(localStorage.user);
+              if(user.hasOwnProperty('userId')) {
+                // http://host?customerId={userId}
+                // TODO: change to ?dinerId; change socketType to dinerId; change table names to socketsDiners and socketsRestaurantDiners
+                Vue.use(VueSocketio, 'http://localhost:3000?customerId='+user.userId);
+              }
+            }
             // Reset the forms
             this.form = JSON.parse(JSON.stringify(this.formDefault));
             // Set auth state to true

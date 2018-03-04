@@ -51,6 +51,7 @@ export default new Vuex.Store({
 			Cart
 		**/
 		setCart(state, cart) {
+			// Check that all properties are set (and that items is an array with at least one object)
 			state.cart.restaurantId = cart.restaurantId;
 			state.cart.menuId = cart.menuId;
 			state.cart.items = cart.items;
@@ -75,14 +76,15 @@ export default new Vuex.Store({
 		},
 
 		removeItemFromCart(state, item) {
-			var index = state.cart.items.indexOf(item);
-			if (index === -1) {
-				console.log('Error removing item from cart: item could not be found in cart.');
-			} else {
-				array.splice(index, 1);
-			}
+			// Check item is actually in the cart
+			const index = state.cart.items.findIndex(i => i.itemId == item.itemId);
+			if(index === -1) return console.log('ERR [removeItemFromCart]: cart.items does not contain that item!');
+			// Remove item from items array
+			state.cart.items.splice(index, 1);
+			// Update total price
 			var totalPrice = parseFloat(state.cart.totalPrice) - parseFloat(item.price); 
 			totalPrice = totalPrice.toFixed(2);
+			state.cart.totalPrice = totalPrice;
 		}
 	},
 	actions: {},

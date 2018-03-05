@@ -98,12 +98,14 @@ export default {
       If a user has items in his cart, and then navigates to the Restaurant List, we destroy the cart object in local storage, 
       and reset its state. This is to prevent the cart from containing items from multiple menus/restaurants (!)
 
+      (Later we can have multiple carts, identified by the menuId).
+
       The following is unlikely, but if a user navigates directly from one menu to another, e.g. 
         
         1) User is currently on route `/r/SkxjHgNYRb/m/r1biHgNY0Z` (menu A)
         2) User enters into address bar route `/r/SkxjHgNYRb/m/xjj8sD0c9` (menu B)
 
-      then destroy the existing cart. Otherwise the cart may contain items from menu A AND menu B!
+      then we destroy the existing cart. Otherwise the cart may later contain items from both ymenu A AND menu B!
     **/
     this.manageCartOnNavigation();
     this.getMenuFromBackend();
@@ -260,14 +262,17 @@ export default {
       localStorage.removeItem('activeMenuId');
       this.$router.push('/restaurants');
     }
+
   },
 
   computed: {
     liveCart() {
       return this.$store.getters.getLiveCart;
     }
-   }
+  }
+
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

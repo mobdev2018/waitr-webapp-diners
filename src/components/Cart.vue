@@ -88,56 +88,51 @@ export default {
 
   methods: {
     placeOrder() {
-      // First check if the cart has any items
-      if(this.liveCart.items.length < 1) {
-        console.log('Err: the cart is empty! You can\'t place an empty order!');
-      } else {
-        // TODO: Get cart state (order items)
-        // TODO: Compile the order here, by adding it to the state
-
-        // Mock order
-        const items = [
-          //{
-          //  itemId: 'asdasd3',
-          //  name: 'Fish and Chips',
-          //  price: 8.50
-          //},
-          {
-            itemId: 'ByukFl6Rb',
-            name: 'Serloin steak',
-            price: 11.00
-          },
-          {
-            itemId: 'HyjJvthAW',
-            name: 'Prawn cocktail',
-            price: 4.50
-          },
-          //{
-          //  itemId: 'Hy0gdK2R-',
-          //  name: '6 chicken wings',
-          //  price: 5.00
-          //}
-        ];
-        console.log(this.liveCart)
-        this.$socket.emit('newOrder', {
-          headers: {
-            token: JSON.parse(localStorage.user).token
-          },
-          metaData: {
-            // TODO: change to dinerId (update on server and in restaurant web app)
-            customerId: JSON.parse(localStorage.user).userId,
-            restaurantId: this.liveCart.restaurantId,
-            tableNo: 8,
-            price: this.liveCart.totalPrice,
-            time: new Date().getTime()
-          },
-          items: items // this.liveCart.items
-        });
-
-        // Then set the spinner to sending order to server
-        this.loading.msg = 'Processing your order...'
-        this.loading.still = true;
+      if(this.liveCart === undefined || this.liveCart === null) {
+        return console.log('ERR [placeOrder]: cart state not set.');
       }
+
+      if(!this.liveCart.hasOwnProperty('items')) {
+        return console.log('ERR [placeOrder]: cart.items state not set.');
+      }
+
+      if(this.liveCart.items.length < 1) {
+        return console.log('ERR [placeOrder]: the cart is empty!');
+      }
+
+      // Check that the token is set; we need this for sending the order to the server
+      if(localStorage.getItem('user') === null) return console.log('ERR [placeOrder]: localStorage.user not set.');
+      if(JSON.parse(localStorage.user).token === undefined) {
+        return console.log('ERR [placeOrder]: localStorage.user.token not set.');
+      }
+
+      // Check that the userId is set; we need this for sending the order to the server
+      if(JSON.parse(localStorage.user).userId === undefined) {
+        return console.log('ERR [placeOrder]: localStorage.user.userId not set.');
+      }
+
+      // Send the order to the server
+      this.$socket.emit('newOrder', {
+        headers: {
+          token: JSON.parse(localStorage.user).token
+        },
+        metaData: {
+          // TODO: change to dinerId (update on server and in restaurant web app)
+          customerId: JSON.parse(localStorage.user).userId,
+          restaurantId: this.liveCart.restaurantId,
+          tableNo: 8, // TODO: allow the user to provide the table number before placing the order
+          price: this.liveCart.totalPrice,
+          status: this.orderStatuses.sentToServer,
+          time: new Date().getTime()
+        },
+        items: this.liveCart.items
+      });
+
+      // Add the 
+
+      // Then set the spinner to sending order to server
+      this.loading.msg = 'Processing your order...'
+      this.loading.still = true;
     }
   },
 

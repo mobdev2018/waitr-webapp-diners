@@ -85,6 +85,36 @@ export default new Vuex.Store({
 			var totalPrice = parseFloat(state.cart.totalPrice) - parseFloat(item.price); 
 			totalPrice = totalPrice.toFixed(2);
 			state.cart.totalPrice = totalPrice;
+		},
+
+		/**
+			Order
+		**/
+		setOrder(state, order) {
+			state.order = order;
+		},
+
+		updateOrderStatus(state, order) {
+			console.log('Before status update: ' + JSON.stringify(order));
+			if(order.orderId === undefined || order.status === undefined) {
+				return console.log('ERR [updateOrderStatus]: order.status or order.orderId undefined!');
+			}
+
+			switch(order.status) {
+				case statuses.receivedByServer:
+					state.order.metaData.orderId = order.orderId; // Upon receiving the order, the server assigns the orderId, then sends it back to us
+					state.order.metaData.status = order.status;
+					break;
+				case statuses.receivedByKitchen:
+				case statuses.acceptedByKitchen:
+				case statuses.rejectedByKitchen:
+				case statuses.enRouteToCustomer:
+					state.order.metaData.status = order.status;
+					break;
+				default:
+					console.log('Error updating order-status state. Order from server has status: ' +order.status);
+					break;
+			}
 		}
 	},
 	actions: {},

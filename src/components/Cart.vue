@@ -24,19 +24,6 @@ export default {
   },
   data() {
     return {
-      order: {
-        headers: {
-          token: ''
-        },
-        metaData: {
-          customerId: '',
-          restaurantId: '',
-          tableNo: 10,
-          price: '',
-          time: new Date().getTime()
-        },
-        items: []
-      },
       loading: {
         still: false,
         spinnerColor: '#469ada',
@@ -66,22 +53,31 @@ export default {
     // 3) THEN SEND THE REAL ORDER (and on the server, check each order exists in the database, check for discrepancies etc.)
 
     this.$options.sockets['orderStatusUpdated'] = (order) => {
-      // this.$store.commit('updateOrderStatus', order);
-      // this.showAlert('success', this.successMsg[order.status]);
-      // Stop the spinner
+      // Check the required params are provided
+      if(order.orderId === undefined || order.status === undefined) {
+        return console.log('ERR [handleOrderStatusUpdate]: order.status or order.orderId undefined!');
+      }
+
+      // Update the order's status in the store
+      this.$store.commit('updateOrderStatus', order);
+      console.log('after status update: ' + JSON.stringify(this.liveOrder));
 
       // If status is "receivedByServer", update the loading.msg
       if(order.status == this.orderStatuses.receivedByServer) {
-        console.log('received by server: ' + order.status);
         this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
+        return true;
+      }
 
-      } else if(order.status == this.orderStatuses.receivedByKitchen) {
-        console.log('received by server: ' + order.status);
+      // If status is "recievedByKitchen", we stop the spinner and redirect the user to the my-order page
+      if(order.status == this.orderStatuses.receivedByKitchen) {
         this.loading.msg = 'Your order has been received by the restaurant. We\'ll let you know as soon as they respond.';
-        // Once the restaurant has received the order, redirect user to myorder page
-        this.loading.msg = ''
-        this.loading.still = false;
-        this.$router.push({ name: 'MyOrder', params: {orderId: 'x9Sjd7s'} });
+        // Delay the redirection for a short time
+        window.setInterval(() => {
+          this.loading.msg = ''
+          this.loading.still = false;
+          this.$router.push({ name: 'MyOrder', params: {orderId: order.orderId} });
+          return true;
+        }, 1500);
       }
     }
   },
@@ -111,11 +107,8 @@ export default {
         return console.log('ERR [placeOrder]: localStorage.user.userId not set.');
       }
 
-      // Send the order to the server
-      this.$socket.emit('newOrder', {
-        headers: {
-          token: JSON.parse(localStorage.user).token
-        },
+      // Build order object
+      const order = {
         metaData: {
           // TODO: change to dinerId (update on server and in restaurant web app)
           customerId: JSON.parse(localStorage.user).userId,
@@ -126,9 +119,19 @@ export default {
           time: new Date().getTime()
         },
         items: this.liveCart.items
+      }
+
+      // Send the order to the server
+      this.$socket.emit('newOrder', {
+        headers: {
+          token: JSON.parse(localStorage.user).token
+        },
+        metaData: order.metaData,
+        items: order.items
       });
 
-      // Add the 
+      // Add the order to the store
+      this.$store.commit('setOrder', order);
 
       // Then set the spinner to sending order to server
       this.loading.msg = 'Processing your order...'
@@ -139,6 +142,9 @@ export default {
   computed: {
     liveCart() {
       return this.$store.getters.getLiveCart;
+    },
+    liveOrder() {
+      return this.$store.getters.getLiveOrder;
     }
   }
 }

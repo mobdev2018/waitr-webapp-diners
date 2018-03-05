@@ -1,4 +1,9 @@
 <template>
+  <!-- 
+    TODO: render the user's order state, with the ability to modify it as in the menu (+, -, back-to-menu) 
+    If the cart is empty, just show a "Your cart is empty! Browse our restaurants so you can place an order!"
+  -->
+  
   <div class="container">
     <div class="loading" v-if="loading.still">
       <clip-loader  
@@ -46,43 +51,41 @@ export default {
   },
 
   created () {
-    // 1) Render a page which shows the breakdown of the user's order, with the ability to add/remove items and go back to the menu
-
-    // 2) Let the user specify their table number
-
-    // 3) THEN SEND THE REAL ORDER (and on the server, check each order exists in the database, check for discrepancies etc.)
-
-    this.$options.sockets['orderStatusUpdated'] = (order) => {
-      // Check the required params are provided
-      if(order.orderId === undefined || order.status === undefined) {
-        return console.log('ERR [handleOrderStatusUpdate]: order.status or order.orderId undefined!');
-      }
-
-      // Update the order's status in the store
-      this.$store.commit('updateOrderStatus', order);
-      console.log('after status update: ' + JSON.stringify(this.liveOrder));
-
-      // If status is "receivedByServer", update the loading.msg
-      if(order.status == this.orderStatuses.receivedByServer) {
-        this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
-        return true;
-      }
-
-      // If status is "recievedByKitchen", we stop the spinner and redirect the user to the my-order page
-      if(order.status == this.orderStatuses.receivedByKitchen) {
-        this.loading.msg = 'Your order has been received by the restaurant. We\'ll let you know as soon as they respond.';
-        // Delay the redirection for a short time
-        window.setInterval(() => {
-          this.loading.msg = ''
-          this.loading.still = false;
-          this.$router.push({ name: 'MyOrder', params: {orderId: order.orderId} });
-          return true;
-        }, 1500);
-      }
-    }
+    this.handleOrderStatusUpdatesFromServer();
   },
 
   methods: {
+    handleOrderStatusUpdatesFromServer() {
+      this.$options.sockets['orderStatusUpdated'] = (order) => {
+        // Check the required params are provided
+        if(order.orderId === undefined || order.status === undefined) {
+          return console.log('ERR [handleOrderStatusUpdate]: order.status or order.orderId undefined!');
+        }
+
+        // Update the order's status in the store
+        this.$store.commit('updateOrderStatus', order);
+
+        // If status is "receivedByServer", update the loading.msg
+        if(order.status == this.orderStatuses.receivedByServer) {
+          this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
+          return true;
+        }
+
+        // If status is "recievedByKitchen", we  redirect the user to the my-order page
+        if(order.status == this.orderStatuses.receivedByKitchen) {
+          this.loading.msg = 'Your order has been received by the restaurant. We\'ll let you know as soon as they respond.';
+          // Delay the redirection for a short time
+          window.setInterval(() => {
+            this.loading.msg = ''
+            this.loading.still = false;
+            this.$router.push({ name: 'MyOrder', params: {orderId: order.orderId} });
+            return true;
+          }, 1500);
+        }
+
+      }
+    },
+
     placeOrder() {
       if(this.liveCart === undefined || this.liveCart === null) {
         return console.log('ERR [placeOrder]: cart state not set.');

@@ -95,7 +95,6 @@ export default new Vuex.Store({
 		},
 
 		updateOrderStatus(state, order) {
-			console.log('Before status update: ' + JSON.stringify(order));
 			if(order.orderId === undefined || order.status === undefined) {
 				return console.log('ERR [updateOrderStatus]: order.status or order.orderId undefined!');
 			}
@@ -112,7 +111,7 @@ export default new Vuex.Store({
 					state.order.metaData.status = order.status;
 					break;
 				default:
-					console.log('Error updating order-status state. Order from server has status: ' +order.status);
+					console.log('Error updating order-status state. Order from server has status: ' + order.status);
 					break;
 			}
 		}

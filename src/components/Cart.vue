@@ -21,6 +21,7 @@
 
 // Dependencies
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+import shortId from 'shortid';
 
 export default {
   name: 'Cart',
@@ -57,31 +58,32 @@ export default {
   methods: {
     handleOrderStatusUpdatesFromServer() {
       this.$options.sockets['orderStatusUpdated'] = (order) => {
-        // Check the required params are provided
-        if(order.orderId === undefined || order.status === undefined) {
-          return console.log('ERR [handleOrderStatusUpdate]: order.status or order.orderId undefined!');
+        // Check for issues with order status
+        if(order.status === undefined || !Number.isInteger(order.status)) {
+          return console.log('ERR [handleOrderStatusUpdate]: order status: ' + order.status);
+        }
+
+        // Check for other required params
+        if(order.orderId === undefined) {
+          return console.log('ERR [handleOrderStatusUpdate]: orderId missing!');
         }
 
         // Update the order's status in the store
         this.$store.commit('updateOrderStatus', order);
 
-        // If status is "receivedByServer", update the loading.msg
-        if(order.status == this.orderStatuses.receivedByServer) {
-          this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
-          return true;
-        }
-
         // If status is "recievedByKitchen", we  redirect the user to the my-order page
-        if(order.status == this.orderStatuses.receivedByKitchen) {
-          this.loading.msg = 'Your order has been received by the restaurant. We\'ll let you know as soon as they respond.';
+        if(order.status != this.orderStatuses.receivedByServer) {
+          this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
+          
           // Delay the redirection for a short time
           window.setInterval(() => {
             this.loading.msg = ''
             this.loading.still = false;
             this.$router.push({ name: 'MyOrder', params: {orderId: order.orderId} });
             return true;
-          }, 1500);
+          }, 2500);
         }
+        // TODO: log error if error is unhandled
 
       }
     },
@@ -113,6 +115,7 @@ export default {
       // Build order object
       const order = {
         metaData: {
+          orderId: shortId.generate(),
           // TODO: change to dinerId (update on server and in restaurant web app)
           customerId: JSON.parse(localStorage.user).userId,
           restaurantId: this.liveCart.restaurantId,
@@ -134,7 +137,9 @@ export default {
       });
 
       // Add the order to the store
-      this.$store.commit('setOrder', order);
+      const orderState = order.metaData;
+      orderState.items = order.items;
+      this.$store.commit('setOrder', orderState);
 
       // Then set the spinner to sending order to server
       this.loading.msg = 'Processing your order...'

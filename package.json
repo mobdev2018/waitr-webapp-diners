@@ -13,6 +13,7 @@
     "bootstrap": "^3.3.7",
     "jquery": "^3.2.1",
     "moment": "^2.19.2",
+    "shortid": "^2.2.8",
     "underscore": "^1.8.3",
     "v-money": "^0.8.1",
     "vee-validate": "^2.0.0-rc.19",

@@ -95,23 +95,34 @@ export default new Vuex.Store({
 		},
 
 		updateOrderStatus(state, order) {
-			if(order.orderId === undefined || order.status === undefined) {
-				return console.log('ERR [updateOrderStatus]: order.status or order.orderId undefined!');
-			}
+			// Check for issues with order status
+	        if(order.status === undefined || !Number.isInteger(order.status)) {
+	          return console.log('ERR [Store.updateOrderStatus]: order status: ' + order.status);
+	        }
+
+	        // Check for other required params
+	        if(order.orderId === undefined) {
+	          return console.log('ERR [Store.updateOrderStatus]: orderId missing!');
+	        }
+
+	        // In order to control this properly, we need to have multiple order objects in the state
+	        if(state.order.orderId != order.orderId) {
+	        	return console.log(
+	        		'ERR [Store.updateOrderStatus]: server sent update for order ' + order.orderId + '. ' +
+	        		'Order state is order ' + state.order.orderId + '. User has placed multiple orders.'
+	        	);
+	        }
 
 			switch(order.status) {
 				case statuses.receivedByServer:
-					state.order.metaData.orderId = order.orderId; // Upon receiving the order, the server assigns the orderId, then sends it back to us
-					state.order.metaData.status = order.status;
-					break;
 				case statuses.receivedByKitchen:
 				case statuses.acceptedByKitchen:
 				case statuses.rejectedByKitchen:
 				case statuses.enRouteToCustomer:
-					state.order.metaData.status = order.status;
+					state.order.status = order.status;
 					break;
 				default:
-					console.log('Error updating order-status state. Order from server has status: ' + order.status);
+					console.log('ERR [Store.updateOrderStatus]: Unhandled order status: ' + order.status);
 					break;
 			}
 		}

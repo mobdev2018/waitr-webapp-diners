@@ -98,9 +98,8 @@ export default {
   },
 
   created () {
-    // Call API for the user's live order (set the order state)
+    // Call API for the user's live order
     this.getUsersUpToDateLiveOrderFromServer();
-    // On refresh, we need to update the message according to the live order state (specifically the status)
 
     // Listen for updates to the order's status
     this.handleOrderStatusUpdatesFromServer();

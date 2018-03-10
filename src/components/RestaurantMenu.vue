@@ -12,6 +12,9 @@
       <button class="backToRestaurants" v-on:click="backToRestaurants">
         Back to restaurants...
       </button>
+      <button v-on:click="goToCart">
+        View Cart...
+      </button>
       <div class="panel-group" id="accordion">
         <div v-for="category in menu.categories" class="panel panel-default">
           <div class="panel-heading categoryPanelHeader">
@@ -94,6 +97,7 @@ export default {
   },
 
   created () {
+    this.setActiveRestaurantAndMenu();
     /**
       If a user has items in his cart, and then navigates to the Restaurant List, we destroy the cart object in local storage, 
       and reset its state. This is to prevent the cart from containing items from multiple menus/restaurants (!)
@@ -112,6 +116,21 @@ export default {
   },
 
   methods: {
+    setActiveRestaurantAndMenu() {
+      // Keep state syncronised with localStorage; revise exactly why we use state as well as local storage, for cart and active menu 
+      if(this.$route.params.restaurantId == undefined) {
+        return console.log('ERR [setActiveRestaurantAndMenu]: liveCart.restaurantId undefined!');
+      }
+
+      if(this.$route.params.menuId == undefined) {
+        return console.log('ERR [setActiveRestaurantAndMenu]: liveCart.menuId undefined!');
+      }
+
+      localStorage.activeRestaurantId = this.$route.params.restaurantId;
+      localStorage.activeMenuId = this.$route.params.menuId;
+      return true;
+    },
+
     manageCartOnNavigation() {
       // If cart is not set, there's nothing to destroy/reset
       if(localStorage.getItem('cart') === null) return true;
@@ -259,8 +278,14 @@ export default {
     },
 
     backToRestaurants() {
+      alert('This will reset your cart!');
+      localStorage.removeItem('activeRestaurantId');
       localStorage.removeItem('activeMenuId');
       this.$router.push('/restaurants');
+    },
+
+    goToCart() {
+      this.$router.push('/cart');
     }
 
   },

@@ -13,7 +13,34 @@
       </clip-loader>
       <p class="loadingMsg">{{loading.msg}}</p>
     </div>
-    <button v-on:click="placeOrder()" v-else>Place order!</button>
+
+    <div v-else>
+
+      <button v-on:click="backToMenu()">Back to the menu</button>
+      
+      <div v-if="liveCart.items.length > 0">
+        <h3>My order</h3>
+
+        <!-- Order data - items etc. -->
+        <ul>
+          <div class="row">
+            <li v-for="item in liveCart.items">
+              <p>{{item.name}} | £{{item.price}}</p>
+            </li>
+          </div>
+        </ul>
+        <p>Total price: {{liveCart.totalPrice}}</p>
+
+        <button v-on:click="placeOrder()">Place order!</button>
+      </div>
+
+      <div v-else>
+        <img src="" />
+        <p>Your cart is empty!</p>
+      </div>
+
+    </div>
+
   </div>
 </template>
 
@@ -56,6 +83,35 @@ export default {
   },
 
   methods: {
+    backToMenu() {
+      if(localStorage.getItem('activeRestaurantId') === null) {
+        return console.log('ERR [backToMenu]: activeRestaurantId not set!');
+      }
+
+      if(localStorage.getItem('activeMenuId') === null) {
+        return console.log('ERR [backToMenu]: activeMenuId not set!');
+      }
+
+      /**
+      if(this.liveCart.restaurantId == undefined) {
+        return console.log('ERR [backToMenu]: liveCart.restaurantId undefined!');
+      }
+
+      if(this.liveCart.menuId == undefined) {
+        return console.log('ERR [backToMenu]: liveCart.menuId undefined!');
+      }
+      */
+
+      this.$router.push({ 
+        name: 'RestaurantMenu', 
+        params: { 
+          restaurantId: localStorage.activeRestaurantId, //this.liveCart.restaurantId,
+          menuId: localStorage.activeMenuId//this.liveCart.menuId
+        } 
+      });
+      return true;
+    },
+
     handleOrderStatusUpdatesFromServer() {
       this.$options.sockets['orderStatusUpdated'] = (order) => {
         // Check for issues with order status

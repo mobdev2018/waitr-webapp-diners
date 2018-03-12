@@ -55,7 +55,7 @@
       </div>
 
       <div class="emptyCartContainer" v-else>
-        <img src="../assets/open-box-colour.png" />
+        <img src="../assets/circumference.png" />
         <p class="emptyCart">Your cart is empty!</p>
       </div>
 
@@ -243,7 +243,7 @@ export default {
 
   .loading {
     position: fixed;
-    top: 50% !important;
+    top: 45% !important;
     left: 50% !important;
     transform: translate(-50%, -50%);
   }
@@ -267,7 +267,7 @@ export default {
 
   .emptyCart {
     margin-top: 15px;
-    color: #f74275;
+    color: #1aa3ff;
     font-size: 16px;
     font-weight: bold;
   }

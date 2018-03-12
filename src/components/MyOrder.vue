@@ -42,17 +42,17 @@
       </div>
     </div>
 
-    <div v-if="liveOrder.status === 400">
-      <img src="../assets/smartphone.png"/>
-      <p class="loadingMsg">Woohoo! Your order has been accepted. We\'ll let you know when it's on its way.</p>
-    </div>
-    <div v-if="liveOrder.status === 999">
-      <img src="../assets/broken-heart.png"/>
-      <p class="loadingMsg">Bad news! Your order has been rejected. A member of staff will be over to speak to you shortly.</p>
-    </div>
-    <div v-if="liveOrder.status === 1000">
+    <div v-if="liveOrder.status === 400" class="orderStatusContainer">
       <img src="../assets/confetti.png"/>
-      <p class="loadingMsg">Woohoo! Your order is on it\'s way!</p>
+      <p class="orderStatusMsg" id="orderAccepted">Woohoo! Your order has been accepted. We'll let you know when it's on its way.</p>
+    </div>
+    <div v-if="liveOrder.status === 999" class="orderStatusContainer">
+      <img src="../assets/upset.png"/>
+      <p class="orderStatusMsg" id="orderRejected">Bad news! Your order has been rejected. A member of staff will be over to speak to you shortly.</p>
+    </div>
+    <div v-if="liveOrder.status === 1000" class="orderStatusContainer">
+      <img src="../assets/startup.png"/>
+      <p class="orderStatusMsg" id="orderEnRoute">Woohoo! Your order is on it's way!</p>
     </div>
   </div>
 </template>
@@ -71,7 +71,7 @@ export default {
   data() {
     return {
       loading: {
-        still: false,
+        still: true,
         spinnerColor: '#006DF0',
         spinnerSize: '70px',
         msg: 'Checking your order\'s status...'
@@ -197,7 +197,7 @@ export default {
 
   .loading {
     position: fixed;
-    top: 50% !important;
+    top: 45% !important;
     left: 50% !important;
     transform: translate(-50%, -50%);
   }
@@ -210,6 +210,32 @@ export default {
   img {
     height: 150px;
     width: auto;
+  }
+
+  .orderStatusContainer {
+    position: fixed;
+    top: 45% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+  }
+
+  .orderStatusMsg {
+    margin-top: 15px;
+    color: #006DF0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  #orderEnRoute {
+    color: #e60000 !important;
+  }
+
+  #orderAccepted {
+    color: #ffa31a !important;
+  }
+
+  #orderRejected {
+    color: #e68a00 !important;
   }
 
 </style>

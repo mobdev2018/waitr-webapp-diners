@@ -3,6 +3,7 @@
     <div class="container-fluid">
       <!-- Main page content -->
       <router-view/>
+      <navbar></navbar>
     </div>
   </div>
 </template>

@@ -1,10 +1,32 @@
 <template>
-  <!-- 
-    TODO: render the user's order state, with the ability to modify it as in the menu (+, -, back-to-menu) 
-    If the cart is empty, just show a "Your cart is empty! Browse our restaurants so you can place an order!"
-  -->
-  
   <div class="container">
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-12">
+
+            <p
+            class="link"
+            v-on:click="navigate"
+            v-if="active.restaurantId !== null && active.menuId !== null"
+            :to="{ 
+              name: 'RestaurantMenu', 
+              params: { restaurantId: active.restaurantId, menuId: active.menuId } 
+            }">
+              < Menu
+            </p>
+
+            <p 
+            class="link"
+            v-on:click="navigate"
+            v-else
+            :to="{ name: 'RestaurantsList' }">
+              < Restaurants
+            </p>
+          </div>
+        </div>
+      </div>
+    </nav>
     <div class="loading" v-if="loading.still">
       <clip-loader  
         :color="loading.spinnerColor" 
@@ -15,8 +37,6 @@
     </div>
 
     <div v-else>
-
-      <button v-on:click="backToMenu()">Back to the menu</button>
       
       <div v-if="liveCart.items.length > 0">
         <h3>My order</h3>
@@ -34,9 +54,9 @@
         <button v-on:click="placeOrder()">Place order!</button>
       </div>
 
-      <div v-else>
-        <img src="" />
-        <p>Your cart is empty!</p>
+      <div class="emptyCartContainer" v-else>
+        <img src="../assets/open-box-colour.png" />
+        <p class="emptyCart">Your cart is empty!</p>
       </div>
 
     </div>
@@ -59,7 +79,7 @@ export default {
     return {
       loading: {
         still: false,
-        spinnerColor: '#469ada',
+        spinnerColor: '#006DF0',
         spinnerSize: '70px',
         msg: ''
       },
@@ -79,37 +99,30 @@ export default {
   },
 
   created () {
+    this.handleNavigationChecks();
     this.handleOrderStatusUpdatesFromServer();
   },
 
   methods: {
-    backToMenu() {
-      if(localStorage.getItem('activeRestaurantId') === null) {
-        return console.log('ERR [backToMenu]: activeRestaurantId not set!');
-      }
+    // If there is a live order (the cart should be empty), redirect the user to their order
+    handleNavigationChecks() {
+    },
 
-      if(localStorage.getItem('activeMenuId') === null) {
-        return console.log('ERR [backToMenu]: activeMenuId not set!');
-      }
+    navigate() {
+      if(this.active.restaurantId !== null && this.active.menuId !== null) {
+        
+        this.$router.push(
+          { name: 'RestaurantMenu', 
+            params: {
+              restaurantId: this.active.restaurantId,
+              menuId: this.active.menuId
+            } 
+          }
+        );
 
-      /**
-      if(this.liveCart.restaurantId == undefined) {
-        return console.log('ERR [backToMenu]: liveCart.restaurantId undefined!');
+      } else {
+        this.$router.push({ name: 'RestaurantsList' });
       }
-
-      if(this.liveCart.menuId == undefined) {
-        return console.log('ERR [backToMenu]: liveCart.menuId undefined!');
-      }
-      */
-
-      this.$router.push({ 
-        name: 'RestaurantMenu', 
-        params: { 
-          restaurantId: localStorage.activeRestaurantId, //this.liveCart.restaurantId,
-          menuId: localStorage.activeMenuId//this.liveCart.menuId
-        } 
-      });
-      return true;
     },
 
     handleOrderStatusUpdatesFromServer() {
@@ -209,6 +222,12 @@ export default {
     },
     liveOrder() {
       return this.$store.getters.getLiveOrder;
+    },
+    active() {
+      return {
+        restaurantId: localStorage.getItem('activeRestaurantId'),
+        menuId: localStorage.getItem('activeMenuId')
+      }
     }
   }
 }
@@ -231,7 +250,35 @@ export default {
 
   .loadingMsg {
     font-size: 16px;
-    color: #469ada;
+    color: #006DF0;
+  }
+
+  img {
+    height: 150px;
+    width: auto;
+  }
+
+  .emptyCartContainer {
+    position: fixed;
+    top: 45% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+  }
+
+  .emptyCart {
+    margin-top: 15px;
+    color: #f74275;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .link {
+    margin-top: 15px;
+    padding-left: 5px;
+    float: left;
+    font-size: 14px;
+    color: #006DF0;
+    cursor: pointer;
   }
 
 </style>

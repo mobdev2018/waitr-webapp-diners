@@ -1,24 +1,28 @@
 <template>
 <nav class="navbar navbar-default navbar-fixed-bottom">
   <div class="container-fluid">
-    <div v-bind:class="{'active': $route.path == '/'}" class="navbar-header">
-      <router-link class="navbar-brand" to="/order">
-        waitr
-      </router-link>
+    <div class="row">
+
+      <div class="col-xs-4 navItem" v-on:click="navigate('RestaurantsList')">
+        <img src="../assets/nav-icons/store-active.png" v-if="route == 'RestaurantsList'">
+        <img src="../assets/nav-icons/store.png" v-else>
+        <p v-bind:class="{ active: route == 'RestaurantsList' }">Restaurants</p>
+      </div>
+
+      <div class="col-xs-4 navItem" v-on:click="navigate('Cart')">
+        <img src="../assets/nav-icons/cart-active.png" v-if="route == 'Cart'">
+        <img src="../assets/nav-icons/cart.png" v-else>
+        <p v-bind:class="{ active: route == 'Cart' }">Cart</p>
+      </div>
+
+      <div class="col-xs-4 navItem" v-on:click="navigate('MyOrderHistory')">
+        <img src="../assets/nav-icons/list-active.png" v-if="route == 'MyOrderHistory'">
+        <img src="../assets/nav-icons/list.png" v-else>
+        <p v-bind:class="{ active: route == 'MyOrderHistory' }">Orders</p>
+      </div>
+
     </div>
-    <div id="navbar">
-      <ul class="nav navbar-nav navbar-left">
-        <li>
-          <router-link to="/restaurants">Restaurants</router-link>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li>
-          <router-link to="/cart">Cart</router-link>
-        </li>
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container-fluid -->
+  </div>
 </nav>
 </template>
 
@@ -32,12 +36,35 @@ export default {
     }
   },
 
-  created () {},
+  created () {
+  },
 
   methods: {
+    navigate(routeName) {
+      var routeParams = {};
+
+      if(routeName == 'MyOrderHistory') {
+                // Check that the token is set; we need this for the dynamic route
+        if(localStorage.getItem('user') === null) {
+          return console.log('ERR [navigate]: localStorage.user not set.');
+        }
+
+        if(JSON.parse(localStorage.user).userId === undefined) {
+          return console.log('ERR [navigate]: localStorage.user.userId undefined.');
+        }
+
+        routeParams = {userId: JSON.parse(localStorage.user).userId};
+      }
+
+      this.$router.push({ name: routeName, params: routeParams });
+      return true;
+    }
   },
 
   computed: {
+    route() {
+      return this.$route.name;
+    }
   }
 }
 </script>
@@ -49,40 +76,19 @@ export default {
     src: url("../fonts/grotesque.otf");
   }
 
-  #navbar {
-    background-color: #3a3a3a;
-    /*padding: 0 15px;*/
-    font-family: 'grotesque';
+  .navbar-default {
+    padding-top: 15px;
   }
 
-  #navbar .navbar-nav li a {
-    color: #fff !important;
-    font-size: 16px;
+  .active {
+    color: #006DF0;
   }
 
-  .navbar-header {
-    padding-left: 15px;
-    background-color: #3a3a3a;
+  p {
+    color: #6B6B6B;
   }
 
-  .navbar-right {
-    padding-right: 15px;
-  }
-
-  .navbar-right a {
-    font-size: 12px !important;
-  }
-
-  .navbar {
-    border: none;
-  }
-
-  .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
-    background-color: #262626;
-  }
-
-  a {
-    color: white;
+  .navItem {
     cursor: pointer;
   }
 

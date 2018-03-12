@@ -5,6 +5,7 @@ import RestaurantsList from '@/components/RestaurantsList'
 import RestaurantMenu from '@/components/RestaurantMenu'
 import Cart from '@/components/Cart'
 import MyOrder from '@/components/MyOrder'
+import MyOrderHistory from '@/components/MyOrderHistory'
 
 Vue.use(Router)
 
@@ -47,6 +48,13 @@ export default new Router({
       path: '/order/:orderId',
       name: 'MyOrder',
       component: MyOrder
+    },
+
+    // A screen which displays all the user's past orders
+    {
+      path: '/u/:userId/orders',
+      name: 'MyOrderHistory',
+      component: MyOrderHistory
     }
   ]
 })

@@ -89,7 +89,7 @@ export default {
       menu: {},
       loading: {
         still: true,
-        spinnerColor: '#469ada',
+        spinnerColor: '#006DF0',
         spinnerSize: '70px',
         msg: 'Loading menu...'
       }
@@ -317,7 +317,7 @@ export default {
 
   .loadingMsg {
     font-size: 16px;
-    color: #469ada;
+    color: #006DF0;
   }
 
   .panel-group {

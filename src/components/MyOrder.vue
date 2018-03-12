@@ -72,7 +72,7 @@ export default {
     return {
       loading: {
         still: false,
-        spinnerColor: '#469ada',
+        spinnerColor: '#006DF0',
         spinnerSize: '70px',
         msg: 'Checking your order\'s status...'
       },
@@ -204,7 +204,7 @@ export default {
 
   .loadingMsg {
     font-size: 16px;
-    color: #469ada;
+    color: #006DF0;
   }
 
   img {

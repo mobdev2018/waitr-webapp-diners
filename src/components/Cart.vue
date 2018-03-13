@@ -106,6 +106,11 @@ export default {
   methods: {
     // If there is a live order (the cart should be empty), redirect the user to their order
     handleNavigationChecks() {
+      if(this.liveCart.items.length < 1) {
+        if(this.liveOrder.orderId && Number.isInteger(this.liveOrder.status)) {
+          this.$router.push('/order/'+this.liveOrder.orderId);
+        }
+      }
     },
 
     navigate() {
@@ -141,7 +146,7 @@ export default {
         this.$store.commit('updateOrderStatus', order);
 
         // If status is "recievedByKitchen", we  redirect the user to the my-order page
-        if(order.status != this.orderStatuses.receivedByServer) {
+        if(order.status == this.orderStatuses.receivedByServer) {
           this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
           
           // Delay the redirection for a short time

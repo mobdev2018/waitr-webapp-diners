@@ -8,21 +8,17 @@
             <p
             class="link"
             v-on:click="navigate"
-            v-if="active.restaurantId !== null && active.menuId !== null"
-            :to="{ 
-              name: 'RestaurantMenu', 
-              params: { restaurantId: active.restaurantId, menuId: active.menuId } 
-            }">
+            v-if="active.restaurantId !== null && active.menuId !== null">
               < Menu
             </p>
 
             <p 
             class="link"
             v-on:click="navigate"
-            v-else
-            :to="{ name: 'RestaurantsList' }">
+            v-else>
               < Restaurants
             </p>
+
           </div>
         </div>
       </div>
@@ -39,19 +35,33 @@
     <div v-else>
       
       <div v-if="liveCart.items.length > 0">
-        <h3>My order</h3>
 
-        <!-- Order data - items etc. -->
-        <ul>
-          <div class="row">
-            <li v-for="item in liveCart.items">
-              <p>{{item.name}} | £{{item.price}}</p>
-            </li>
+        <div class="jumbotron">
+          <div class="container-fluid orderSummary">
+            <img id="menuIcon" src="../assets/choices.png"/>
+            <p id="orderTotalString">
+              Order total ({{liveCart.items.length}} items): <span id="totalPrice">{{liveCart.totalPrice}}</span>
+            </p>
+            <button 
+              type="button" 
+              class="btn btn-primary btn-lg btn-block"
+              v-on:click="placeOrder()">
+                Go To Checkout
+            </button>
           </div>
-        </ul>
-        <p>Total price: {{liveCart.totalPrice}}</p>
+      </div>
+        
+        <div class="list-group">
+          <div class="list-group-item flex-column align-items-start" v-for="item in liveCart.items">
+            <div class="d-flex w-100 justify-content-between">
+              <div class="row itemRow">
+                <div class="col-xs-8"><p class="itemName">{{item.name}}</p></div>
+                <div class="col-xs-4"><p class="itemPrice">{{item.price}}</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <button v-on:click="placeOrder()">Place order!</button>
       </div>
 
       <div class="emptyCartContainer" v-else>
@@ -284,6 +294,48 @@ export default {
     font-size: 14px;
     color: #006DF0;
     cursor: pointer;
+  }
+
+  .itemRow {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+
+  .itemName {
+    float: left;
+    font-size: 16px;
+  }
+
+  .itemName {
+    font-size: 16px;
+  }
+
+  .itemPrice {
+    float: right;
+    font-size: 16px;
+  }
+
+  .list-group-item {
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  #orderTotalString {
+    font-size: 16px !important;
+  }
+
+  #totalPrice {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  #menuIcon {
+    margin-bottom: 20px;
+  }
+
+  .jumbotron {
+    margin-top: 10px !important;
+    margin-bottom: 0 !important;
   }
 
 </style>

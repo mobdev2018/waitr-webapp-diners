@@ -1,5 +1,42 @@
 <template>
   <div class="container-fluid">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-12">
+
+            <!-- Back-to-restaurants link -->
+            <p 
+            class="link backToRestaurants"
+            v-on:click="backToRestaurants"
+            >
+              < Restaurants
+            </p>
+
+            <!-- Cart button -->
+            <button 
+              v-if="liveCart.items.length > 0"
+              type="button"
+              id="cartBtn"
+              class="btn btn-primary"
+              v-on:click="goToCart"
+              >
+              <div class="row">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+                <span id="cart_numItems">{{liveCart.items.length}}</span>
+                <span id="cart_separator">|</span>
+                <span id="cart_totalPrice">£{{liveCart.totalPrice}}</span>
+              </div>
+            </button>
+
+
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Loading wheel, which is hidden once the API responds to the getMenu call -->
     <div class="loading" v-if="loading.still">
       <clip-loader  
         :color="loading.spinnerColor" 
@@ -8,19 +45,17 @@
       </clip-loader>
       <p class="loadingMsg">{{loading.msg}}</p>
     </div>
+
+    <!-- The Restaurant's menu -->
     <div class="container" v-else>
-      <button class="backToRestaurants" v-on:click="backToRestaurants">
-        Back to restaurants...
-      </button>
-      <button v-on:click="goToCart">
-        View Cart...
-      </button>
+
       <div class="panel-group" id="accordion">
         <div v-for="category in menu.categories" class="panel panel-default">
           <div class="panel-heading categoryPanelHeader">
             <h4 class="panel-title">
               <!-- Category name -->
               <a
+                class="categoryName"
                 data-toggle="collapse"
                 data-parent="#accordion"
                 v-bind:href="'#' + category.categoryId"
@@ -35,31 +70,32 @@
           >
             <!-- Each category is a collapsable panel, containing a table of the category's items -->
             <div class="panel-body">
-              <table class="table">
-                <!-- Each item is a row (<tr>) in the table body (<tbody>). We have to pass the categories object in too, because we need the category index, which we get by using "categories.indexOf(category)" in the item component" -->
-                <tbody>
-                  <tr v-for="item in category.items">
-                    <td class="col-xs-9">{{item.name}}</td>
-                    <td class="col-xs-2">{{item.price}}</td>
-                    <td class="col-xs-1">
-                      <span 
-                        class="glyphicon glyphicon-plus-sign"
-                        v-on:click="addItemToCart(item)"  
-                      ></span>
-                      <!-- Show how many times this item appears in the cart, if > 0 -->
+              <div class="list-group">
+                <div class="list-group-item flex-column align-items-start" v-for="item in category.items">
+                  <div class="d-flex w-100 justify-content-between">
+                    <div class="row itemRow">
+                      <div class="col-xs-5"><p class="itemName">{{item.name}}</p></div>
+                      <div class="col-xs-3"><p class="itemPrice">£{{parseFloat(item.price).toFixed(2)}}</p></div>
+                      <div class="col-xs-4">
+                        <span 
+                          class="glyphicon glyphicon-plus-sign"
+                          v-on:click="addItemToCart(item)"  
+                        ></span>
+                        <span 
+                          v-if="itemPrevalence[item.itemId] != undefined"
+                          class="itemPrevalence"
+                          >{{itemPrevalence[item.itemId]}}</span>
+                        <span 
+                          v-if="itemPrevalence[item.itemId] != undefined"
+                          class="glyphicon glyphicon-minus-sign"
+                          v-on:click="removeItemFromCart(item)"  
+                        ></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                      <!-- 
-                        Only visible if the cart contains an item with the itemId 
-                      -->
-                      <span 
-                        v-if="liveCart.items.findIndex(i => i.itemId == item.itemId) !== -1"
-                        class="glyphicon glyphicon-minus-sign"
-                        v-on:click="removeItemFromCart(item)"  
-                      ></span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -97,6 +133,7 @@ export default {
   },
 
   created () {
+    console.log(this.itemPrevalence);
     this.setActiveRestaurantAndMenu();
     /**
       If a user has items in his cart, and then navigates to the Restaurant List, we destroy the cart object in local storage, 
@@ -293,6 +330,18 @@ export default {
   computed: {
     liveCart() {
       return this.$store.getters.getLiveCart;
+    },
+    itemPrevalence() {
+      const items = this.liveCart.items;
+      const itemPrevalence = {};
+      for(var i in items) {
+        if(itemPrevalence.hasOwnProperty(items[i].itemId)) {
+          itemPrevalence[items[i].itemId]++;
+        } else {
+          itemPrevalence[items[i].itemId] = 1;
+        }
+      }
+      return itemPrevalence;
     }
   }
 
@@ -322,6 +371,7 @@ export default {
 
   .panel-group {
     margin-top: 20px;
+    margin-bottom: 100px !important;
   }
 
   .accordion {
@@ -341,7 +391,7 @@ export default {
   }
 
   .categoryPanelHeader {
-    background-color: #151515 !important;
+    background-color: #eee !important;
     color: #469ada !important;
     padding-right: 3px;
   }
@@ -382,12 +432,14 @@ export default {
   }
 
   .categoryName {
+    font-weight: bold;
     background: none;
     border: none;
     text-align: center;
   }
 
   .categoryName:focus {
+    text-decoration: none;
     outline: none;
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
@@ -396,8 +448,75 @@ export default {
 
   .backToRestaurants {
     margin-top: 20px;
-    font-size: 20px;
+    font-size: 12px;
   }
 
+  .itemRow {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .itemName {
+    float: left;
+  }
+
+  .itemPrice {
+    float: right;
+  }
+
+  .list-group-item {
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  .link {
+    margin-top: 15px;
+    padding-left: 15px;
+    float: left;
+    font-size: 14px;
+    color: #006DF0;
+    cursor: pointer;
+  }
+
+  #cartBtn {
+    float: right;
+    margin-left: 0px !important;
+    margin-right: 15px;
+    font-weight: bold;
+    font-size: 14px !important;
+    margin-top: 10px;
+    padding-top: 3px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .glyphicon {
+    top: 3px;
+    font-size: 12px;
+    padding-right: 3px;
+    margin-left: 10px;
+  }
+
+  #cart_numItems {
+    margin-left: 0px;
+    padding-right: 3px;
+  }
+
+  #cart_totalPrice {
+    padding-left: 3px;
+    margin-right: 10px;
+  }
+
+  #cart_separator {
+    font-size: 15px;
+  }
+
+  .glyphicon-plus-sign, .glyphicon-minus-sign, .itemPrevalence {
+    float: right;
+  }
+
+  .itemPrevalence {
+    padding-left: 5px;
+  }
 
 </style>

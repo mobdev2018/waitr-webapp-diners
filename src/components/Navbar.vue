@@ -76,10 +76,6 @@ export default {
     src: url("../fonts/grotesque.otf");
   }
 
-  .navbar-default {
-    padding-top: 15px;
-  }
-
   .active {
     color: #006DF0;
   }

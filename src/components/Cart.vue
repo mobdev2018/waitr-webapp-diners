@@ -9,7 +9,7 @@
             class="link"
             v-on:click="navigate"
             v-if="active.restaurantId !== null && active.menuId !== null">
-              < Menu
+              < Menu <!-- Add menu name -->
             </p>
 
             <p 
@@ -40,7 +40,7 @@
           <div class="container-fluid orderSummary">
             <img id="menuIcon" src="../assets/choices.png"/>
             <p id="orderTotalString">
-              Order total ({{liveCart.items.length}} items): <span id="totalPrice">{{liveCart.totalPrice}}</span>
+              Order total ({{liveCart.items.length}} items): <span id="totalPrice">£{{liveCart.totalPrice}}</span>
             </p>
             <button 
               type="button" 
@@ -49,14 +49,14 @@
                 Go To Checkout
             </button>
           </div>
-      </div>
+        </div>
         
         <div class="list-group">
           <div class="list-group-item flex-column align-items-start" v-for="item in liveCart.items">
             <div class="d-flex w-100 justify-content-between">
               <div class="row itemRow">
                 <div class="col-xs-8"><p class="itemName">{{item.name}}</p></div>
-                <div class="col-xs-4"><p class="itemPrice">{{item.price}}</p></div>
+                <div class="col-xs-4"><p class="itemPrice">£{{parseFloat(item.price).toFixed(2)}}</p></div>
               </div>
             </div>
           </div>
@@ -289,7 +289,7 @@ export default {
 
   .link {
     margin-top: 15px;
-    padding-left: 5px;
+    padding-left: 15px;
     float: left;
     font-size: 14px;
     color: #006DF0;
@@ -313,6 +313,10 @@ export default {
   .itemPrice {
     float: right;
     font-size: 16px;
+  }
+
+  .list-group {
+    margin-bottom: 100px !important;
   }
 
   .list-group-item {

@@ -183,6 +183,10 @@ export default {
         if(order.status == this.orderStatuses.receivedByServer) {
           this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
           
+          // Reset the user's cart
+          localStorage.removeItem('cart');
+          this.$store.commit('resetCart');
+
           // Delay the redirection for a short time
           window.setInterval(() => {
             this.loading.msg = ''

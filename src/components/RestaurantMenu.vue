@@ -133,7 +133,6 @@ export default {
   },
 
   created () {
-    console.log(this.itemPrevalence);
     this.setActiveRestaurantAndMenu();
     /**
       If a user has items in his cart, and then navigates to the Restaurant List, we destroy the cart object in local storage, 
@@ -315,7 +314,9 @@ export default {
     },
 
     backToRestaurants() {
-      alert('This will reset your cart!');
+      if(localStorage.getItem('cart') !== null) {
+        alert('This will reset your cart!');
+      }
       localStorage.removeItem('activeRestaurantId');
       localStorage.removeItem('activeMenuId');
       this.$router.push('/restaurants');

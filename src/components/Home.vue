@@ -1,6 +1,15 @@
 <template>
   <div class="container">
 
+    <!-- Error -->
+    <nav v-if="error.active" class="navbar">
+      <div class="container-fluid">
+        <div class="row">
+          <p class="errorMsg col-xs-10 col-xs-offset-1">{{error.msg}}</p>
+        </div>
+      </div>
+    </nav>
+    
     <!-- Login form -->
     <div id="loginFormBox" class="formBox col-xs-10 col-xs-offset-1" v-if="loginFormIsVisible">
       <img src="../assets/waiter.png" />
@@ -253,6 +262,10 @@ export default {
       inputs: {
         hasFocus: '',
         hasHadFocus: []
+      },
+      error: {
+        active: false,
+        msg: ''
       }
     }
   },
@@ -330,6 +343,18 @@ export default {
             }
           }
         }).catch((res) => {
+          // TODO: this error message should be a separate component
+          if (res.body && res.body.errorKey) {
+            this.error.msg = res.body.userMsg;
+          } else {
+            this.error.msg = 'Oops! There was an unexpected error. Try again and if the issue persists, contact support.';
+          }
+          this.error.active = true;
+          setTimeout(() => {
+            this.error.active = false;
+            this.error.msg = '';
+          }, 5000);
+
           this.handleApiError(res);
         });
       }
@@ -354,6 +379,18 @@ export default {
           // Reset the signup form
           this.logUserIn(true);
         }).catch((res) => {
+          // TODO: this error message should be a separate component
+          if (res.body && res.body.errorKey) {
+            this.error.msg = res.body.userMsg;
+          } else {
+            this.error.msg = 'Oops! There was an unexpected error. Try again and if the issue persists, contact support.';
+          }
+          this.error.active = true;
+          setTimeout(() => {
+            this.error.active = false;
+            this.error.msg = '';
+          }, 5000);
+
           this.handleApiError(res);
         });
       }
@@ -518,6 +555,17 @@ export default {
   #switchFormString {
     padding-top: 4px;
     font-size: 11px;
+  }
+
+  .navbar {
+    min-height: 40px !important;
+    color: white;
+    background-color: red;
+  }
+
+  .errorMsg {
+    padding-top: 10px;
+    font-size: 10px;
   }
 
 </style>

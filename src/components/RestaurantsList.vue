@@ -74,6 +74,8 @@ export default {
   },
 
   created () {
+    this.redirectToMenu();
+    
     // If the user has items in his cart, remove the cart completely if he vists the restaurants list
     if(localStorage.getItem('cart') !== null) {
       localStorage.removeItem('cart');
@@ -95,6 +97,19 @@ export default {
   },
 
   methods: {
+    redirectToMenu() {
+      if(this.active.restaurantId !== null && this.active.menuId !== null) {
+        this.$router.push(
+          { name: 'RestaurantMenu', 
+            params: {
+              restaurantId: this.active.restaurantId,
+              menuId: this.active.menuId
+            } 
+          }
+        );
+      }
+    }, 
+
     navigateToMenu(restaurantId, menuId) {
       this.$router.push( { name: 'RestaurantMenu', params: { restaurantId, menuId } });
     }
@@ -103,6 +118,12 @@ export default {
   computed: {
     liveOrder() {
       return this.$store.getters.getLiveOrder;
+    },
+    active() {
+      return {
+        restaurantId: localStorage.getItem('activeRestaurantId'),
+        menuId: localStorage.getItem('activeMenuId')
+      }
     }
   }
 }

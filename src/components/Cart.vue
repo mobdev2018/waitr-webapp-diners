@@ -38,16 +38,38 @@
 
         <div class="jumbotron">
           <div class="container-fluid orderSummary">
+
             <img id="menuIcon" src="../assets/choices.png"/>
+
             <p id="orderTotalString">
-              Order total ({{liveCart.items.length}} items): <span id="totalPrice">£{{liveCart.totalPrice}}</span>
+              {{numItemsString}}
+              <span id="totalPrice">£{{liveCart.totalPrice}}</span>
             </p>
-            <button 
-              type="button" 
-              class="btn btn-primary btn-lg btn-block"
-              v-on:click="placeOrder()">
-                Go To Checkout
-            </button>
+
+            <div class="row">
+              <div class="col-xs-4">
+                <input 
+                  id="tableNum" 
+                  type="text" 
+                  class="form-control input-lg" 
+                  placeholder="Table no."
+                  name="tableNum"
+                  v-model="tableNum"
+                  v-validate="{required: true, numeric: true}"
+                  v-on:keyup="hasHadFocus = true"
+                >
+              </div>
+              <div class="col-xs-8">
+                <button 
+                  :disabled="errors.has('tableNum') || hasHadFocus === false"
+                  type="button" 
+                  class="btn btn-primary btn-lg btn-block"
+                  v-on:click="placeOrder()">
+                    Go To Checkout
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
         
@@ -104,7 +126,9 @@ export default {
         // receivedByCustomer: 2000 // would be set by deliverer of food
         // returnedByCustomer: 666,
         // eaten: 500 // May be set once the user has sent feedback
-      }
+      },
+      hasHadFocus: false,
+      tableNum: ''
     }
   },
 
@@ -203,7 +227,7 @@ export default {
           // TODO: change to dinerId (update on server and in restaurant web app)
           customerId: JSON.parse(localStorage.user).userId,
           restaurantId: this.liveCart.restaurantId,
-          tableNo: 8, // TODO: allow the user to provide the table number before placing the order
+          tableNo: this.tableNum,
           price: this.liveCart.totalPrice,
           status: this.orderStatuses.sentToServer,
           time: new Date().getTime()
@@ -233,7 +257,10 @@ export default {
 
   computed: {
     liveCart() {
-      return this.$store.getters.getLiveCart;
+      const cart = this.$store.getters.getLiveCart;
+      const orderedItems = _.sortBy(cart.items, 'name');
+      cart.items = orderedItems;
+      return cart;
     },
     liveOrder() {
       return this.$store.getters.getLiveOrder;
@@ -243,6 +270,11 @@ export default {
         restaurantId: localStorage.getItem('activeRestaurantId'),
         menuId: localStorage.getItem('activeMenuId')
       }
+    },
+    numItemsString() {
+      var str;
+      (this.liveCart.items.length == 1) ? str = 'item' : str = 'items';
+      return "Order total (" + this.liveCart.items.length + " " + str + "):";
     }
   }
 }
@@ -340,6 +372,10 @@ export default {
   .jumbotron {
     margin-top: 10px !important;
     margin-bottom: 0 !important;
+  }
+
+  #tableNum {
+    font-size: 15px;
   }
 
 </style>

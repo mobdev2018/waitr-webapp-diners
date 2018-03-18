@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+
     <div class="loading" v-if="loading.still">
       <clip-loader  
         :color="loading.spinnerColor" 
@@ -8,20 +9,34 @@
       </clip-loader>
       <p class="loadingMsg">{{loading.msg}}</p>
     </div>
-    <ul v-else>
+
       <!-- Each li should, upon click, show a dropdown menu of the restaurant's menus.
            For now, on click, we will automatically redirect the user to the
            restaurant's default menu (since we do not yet support multiple menus per restuarant)
       -->
-      <li v-for="restaurant in restaurants">
-        <router-link :to="{ 
-          name: 'RestaurantMenu', 
-          params: { restaurantId: restaurant.restaurantId, menuId: restaurant.menus[0].menuId } 
-        }">
-          {{restaurant.name}} ({{restaurant.menus[0].name}})
-        </router-link>
-      </li>
-    </ul>
+    <div class="list-group" v-else>
+      <div class="list-group-item flex-column align-items-start" v-for="restaurant in restaurants">
+        <div 
+          class="d-flex w-100 justify-content-between"
+          v-on:click="navigateToMenu(restaurant.restaurantId, restaurant.menus[0].menuId)"
+        >
+        <div class="row">
+          <div class="col-xs-6">
+            <p class="restaurantName">Waterlane</p>
+          </div>
+          <div class="col-xs-6">
+            <p class="restaurantType"></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-8">
+            <p class="restaurantTown">Canterbury</p>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -80,6 +95,9 @@ export default {
   },
 
   methods: {
+    navigateToMenu(restaurantId, menuId) {
+      this.$router.push( { name: 'RestaurantMenu', params: { restaurantId, menuId } });
+    }
   },
 
   computed: {
@@ -108,6 +126,27 @@ export default {
   .loadingMsg {
     font-size: 16px;
     color: #006DF0;
+  }
+
+  .list-group {
+    margin-bottom: 100px !important;
+  }
+
+  .list-group-item {
+    border-left: 0 !important;
+    border-right: 0 !important;
+    cursor: pointer;
+  }
+
+  .restaurantName {
+    font-weight: bold;
+    float: left;
+    font-size: 16px;
+  }
+
+  .restaurantTown {
+    float: left;
+    font-size: 12px;
   }
 
 </style>

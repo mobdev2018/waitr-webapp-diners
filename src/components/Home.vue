@@ -2,8 +2,9 @@
   <div class="container">
 
     <!-- Login form -->
-    <div id="loginFormBox" class="formBox col-xs-8 col-xs-offset-2" v-if="loginFormIsVisible">
-      <h1>Log in</h1>
+    <div id="loginFormBox" class="formBox col-xs-10 col-xs-offset-1" v-if="loginFormIsVisible">
+      <img src="../assets/waiter.png" />
+      <h1 class="formType">Log in</h1>
       <form id="loginForm" v-on:keyup.enter="logUserIn()">
         <input
           class="input pass"
@@ -48,7 +49,7 @@
     <div id="signupFormBox" class="formBox col-xs-8 col-xs-offset-2" v-else>
       <!-- Registration form -->
       <div class="row">
-        <h1>Create an account</h1>
+        <h1 class="formType">Create an account</h1>
       </div>
       <form id="signupForm" v-on:keyup.enter="registerUser()">
         <!-- First name -->
@@ -137,15 +138,16 @@
           {{ errors.first('confirmPassword') }}
         </span>
 
-        <div class="row">
+        <div class="row formBottom">
           <!-- Registration button and links -->
           <button
-            class="inputButton"
+            class="btn btn-primary btn-md btn-block"
+            :disabled="errors.items.length > 0 || inputs.hasHadFocus.length < 5"
             v-on:click="registerUser()"
             type="button">
             Sign me up!
           </button>
-          <div class="text-center">
+          <div id="switchFormString" class="text-center">
             Already have an account?
             <a
               class="formLink"
@@ -179,7 +181,7 @@ export default {
   mixins: [functions],
   data() {
     return {
-      loginFormIsVisible: false,
+      loginFormIsVisible: true,
       form: {
         login: {
           email: {
@@ -256,6 +258,9 @@ export default {
   },
 
   created () {
+    console.log(this.inputs.hasHadFocus.length);
+    console.log(this.errors);
+
     // If the user is logged in, redirect them to...    
     if(this.userIsAuthenticated) {
       this.$router.push('/restaurants');
@@ -273,6 +278,7 @@ export default {
       To avoid this, we also check if any inputs have had focus; hence, we track this here.
     **/
     updateInputStatus(form, input) {
+      console.log(this.errors);
       // Whenever an input loses focus, reset the placehodler to its default (because on focus, we set it to '')
       this.form[form][input].placeholder = this.formDefault[form][input].placeholder;
       // Set "focus history" of form
@@ -370,6 +376,10 @@ export default {
     src: url("../fonts/grotesque.otf");
   }
 
+  .formBottom {
+    margin-top: 10px;
+  }
+
   .help {
     color: #dd0d0d !important;
     font-size: 10px;
@@ -377,7 +387,8 @@ export default {
 
   .is-danger-input {
     border-bottom: 2px solid #dd0d0d !important;
-    margin-bottom: 0px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
   }
 
   .is-danger-input:focus {
@@ -387,7 +398,7 @@ export default {
   @-webkit-keyframes autofill {
     to {
       background: none;
-      color: #fff;
+      color: black;
     }
   }
 
@@ -406,10 +417,14 @@ export default {
     font-family: "grotesque", Helvetica, sans-serif;
   }
 
+  form {
+    margin-top: 20px;
+  }
+
   .input {
+    width: 100%;
     display: block;
     margin: 0 auto 15px;
-    padding: 0 5px;
     border: none;
     background: transparent;
     border-bottom: 2px solid #fff;
@@ -461,7 +476,7 @@ export default {
   }
 
   .pass:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px white inset;
+    -webkit-box-shadow: 0 0 0 1000px white;
   }
 
   .inputButton {
@@ -469,7 +484,7 @@ export default {
     width: 40%;
     height: 35px;
     display: block;
-    margin: 30px auto 30px;
+    margin: 15px auto 10px;
     color: white;
     background-color: #469ada;
     border: 1px solid #469ada;
@@ -492,6 +507,17 @@ export default {
   .text-center a {
     color: black;
     text-decoration: underline;
+  }
+
+  img {
+    height: 150px;
+    width: auto;
+    margin-bottom: 20px;
+  }
+
+  #switchFormString {
+    padding-top: 4px;
+    font-size: 11px;
   }
 
 </style>

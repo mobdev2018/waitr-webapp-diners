@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <!-- Main page content -->
       <router-view/>
-      <navbar></navbar>
+      <navbar v-if="$route.path != '/'"></navbar>
     </div>
   </div>
 </template>

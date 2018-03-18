@@ -425,12 +425,6 @@ export default {
     border-right: 1px solid #151515 !important;
   }
 
-  .glyphicon {
-    padding-right: 10px;
-    cursor: pointer;
-    font-size: 12px;
-  }
-
   .categoryName {
     font-weight: bold;
     background: none;
@@ -497,6 +491,16 @@ export default {
     margin-left: 10px;
   }
 
+  .glyphicon-shopping-cart {
+    top: 0.25px;
+  }
+
+  .glyphicon-plus-sign, .glyphicon-minus-sign {
+    padding-right: 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
   #cart_numItems {
     margin-left: 0px;
     padding-right: 3px;
@@ -516,7 +520,8 @@ export default {
   }
 
   .itemPrevalence {
-    padding-left: 5px;
+    padding-left: 4px;
+    padding-right: 2px;
   }
 
 </style>

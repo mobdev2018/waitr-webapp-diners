@@ -64,7 +64,7 @@
                   :disabled="errors.has('tableNum') || hasHadFocus === false"
                   type="button" 
                   class="btn btn-primary btn-lg btn-block"
-                  v-on:click="placeOrder()">
+                  v-on:click="checkout()">
                     Go To Checkout
                 </button>
               </div>
@@ -198,6 +198,25 @@ export default {
         // TODO: log error if error is unhandled
 
       }
+    },
+
+    checkout() {
+      var customerEmail = '';
+      if(localStorage.getItem('user') !== null) {
+        customerEmail = JSON.parse(localStorage.user).email;
+      }
+
+      // this.$checkout.close() also activeRestaurantIdilable
+      this.$checkout.open({
+        image: require('../assets/waiter.png'),
+        email: customerEmail,
+        amount: this.liveCart.totalPrice * 100, // in pence 
+        token: (token) => {
+          
+          // Send the token to the waitr api to process the payment
+          // Then listen for an update from the api
+        } 
+      });
     },
 
     placeOrder() {

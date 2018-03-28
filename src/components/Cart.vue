@@ -212,12 +212,23 @@ export default {
         email: customerEmail,
         amount: this.liveCart.totalPrice * 100, // in pence 
         token: (token) => {
+
+          // *TODO*: we need to set the following: 
+          // order.paymentDetails = {
+          //    orderId: // to be set in placeOrder() below
+          //    destination: // this is the recipient restaurant's Stripe account ID, which will be sent by the server
+          //                    in response to the getRestaurantMenu API call, and then set in localStorage.cart/cart state
+          //    tripeToken: order.stripeToken.id
+          //    amount: // amount paid
+          //    currency: // currency of transaction
+          // }
+
           // Add the token to the cart (localStorage and state)
           if(localStorage.getItem('cart') === null) {
             return console.log('ERR [checkout]: localStorage.cart = null');
           }
           const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
-          cartObj.stripeData = token;
+          cartObj.stripeToken = token;
           // Convert the updated cart object back to a string and save it to local storage
           const cartString = JSON.stringify(cartObj);
           localStorage.cart = cartString;
@@ -249,7 +260,7 @@ export default {
 
       // ACheck that all required cart-state properties are set
       const requiredCartProps = [
-        'items', 'restaurantId', 'totalPrice', 'stripeData'
+        'items', 'restaurantId', 'totalPrice', 'stripeToken'
       ];
 
       var missingParams = [];
@@ -267,6 +278,7 @@ export default {
       // Check that the table number is an integer (should always be enforced by the input anyway)
       // if(!Number.isInteger(this.tableNum)) return console.log('ERR [placeOrder]: tableNum is not an integer!');
 
+      // *TODO*: decomplicate this horrible manipulation of the order object
       // Build order object
       const order = {
         metaData: {
@@ -274,26 +286,28 @@ export default {
           customerId: JSON.parse(localStorage.user).userId, // TODO: change to dinerId
           restaurantId: this.liveCart.restaurantId,
           tableNo: this.tableNum,
-          price: this.liveCart.totalPrice,
-          stripeData: this.liveCart.stripeData, 
+          price: this.liveCart.totalPrice, 
           status: this.orderStatuses.sentToServer, // we set this here
           time: new Date().getTime() // we set this here
         },
+        stripeToken: this.liveCart.stripeToken,
         items: this.liveCart.items
       }
 
-      // Send the order to the server
+      // Build order for the server, and send
       this.$socket.emit('newOrder', {
         headers: {
           token: JSON.parse(localStorage.user).token
         },
         metaData: order.metaData,
+        stripeToken: order.stripeToken,
         items: order.items
       });
 
-      // Add the order to the store
+      // Build order for state, and set
       const orderState = order.metaData;
       orderState.items = order.items;
+      orderState.stripeToken = order.stripeToken;
       this.$store.commit('setOrder', orderState);
 
       // Then set the spinner to sending order to server

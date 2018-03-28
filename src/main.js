@@ -18,7 +18,7 @@ import VueStripeCheckout from 'vue-stripe-checkout';
 // function.
 const options = {
   key: 'pk_live_sQmmS5iwUEyMNL1c5CLCyMz5', // publishable key
-  name: "Shut up 'n' take my money!",
+  name: "waitr",
   locale: 'auto',
   currency: 'GBP'
 }

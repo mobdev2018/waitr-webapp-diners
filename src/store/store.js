@@ -61,6 +61,10 @@ export default new Vuex.Store({
 			state.cart.totalPrice = totalPrice;
 		},
 
+		updateCart(state, cart) {
+			state.cart = cart;
+		},
+
 		resetCart(state) {
 			state.cart.restaurantId = '';
 			state.cart.menuId = '';

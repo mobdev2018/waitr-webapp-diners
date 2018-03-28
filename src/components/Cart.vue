@@ -128,7 +128,7 @@ export default {
         // eaten: 500 // May be set once the user has sent feedback
       },
       hasHadFocus: false,
-      tableNum: ''
+      tableNum: null
     }
   },
 
@@ -212,26 +212,25 @@ export default {
         email: customerEmail,
         amount: this.liveCart.totalPrice * 100, // in pence 
         token: (token) => {
+          // Add the token to the cart (localStorage and state)
+          if(localStorage.getItem('cart') === null) {
+            return console.log('ERR [checkout]: localStorage.cart = null');
+          }
+          const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
+          cartObj.stripeData = token;
+          // Convert the updated cart object back to a string and save it to local storage
+          const cartString = JSON.stringify(cartObj);
+          localStorage.cart = cartString;
+          this.$store.commit('updateCart', cartObj);
           
-          // Send the token to the waitr api to process the payment
+          // Send the order to the server (with the Stripe token for processing the payment)
+          this.placeOrder();
           // Then listen for an update from the api
         } 
       });
     },
 
     placeOrder() {
-      if(this.liveCart === undefined || this.liveCart === null) {
-        return console.log('ERR [placeOrder]: cart state not set.');
-      }
-
-      if(!this.liveCart.hasOwnProperty('items')) {
-        return console.log('ERR [placeOrder]: cart.items state not set.');
-      }
-
-      if(this.liveCart.items.length < 1) {
-        return console.log('ERR [placeOrder]: the cart is empty!');
-      }
-
       // Check that the token is set; we need this for sending the order to the server
       if(localStorage.getItem('user') === null) return console.log('ERR [placeOrder]: localStorage.user not set.');
       if(JSON.parse(localStorage.user).token === undefined) {
@@ -243,17 +242,42 @@ export default {
         return console.log('ERR [placeOrder]: localStorage.user.userId not set.');
       }
 
+      // Check that the cart state is set
+      if(this.liveCart === undefined || this.liveCart === null) {
+        return console.log('ERR [placeOrder]: cart state not set.');
+      }
+
+      // ACheck that all required cart-state properties are set
+      const requiredCartProps = [
+        'items', 'restaurantId', 'totalPrice', 'stripeData'
+      ];
+
+      var missingParams = [];
+      for(var i = 0; i < requiredCartProps.length; i++) {
+        if(!this.liveCart.hasOwnProperty(requiredCartProps[i])) missingParams.push(requiredCartProps[i]);
+      }
+
+      if(missingParams.length > 0) {
+        return console.log('ERR [placeOrder]: cart state is missing required props: ' + missingParams);
+      }
+
+      // Check that there is at least one item in the cart state
+      if(this.liveCart.items.length < 1) return console.log('ERR [placeOrder]: the cart is empty!');
+
+      // Check that the table number is an integer (should always be enforced by the input anyway)
+      // if(!Number.isInteger(this.tableNum)) return console.log('ERR [placeOrder]: tableNum is not an integer!');
+
       // Build order object
       const order = {
         metaData: {
-          orderId: shortId.generate(),
-          // TODO: change to dinerId (update on server and in restaurant web app)
-          customerId: JSON.parse(localStorage.user).userId,
+          orderId: shortId.generate(), // we set this here
+          customerId: JSON.parse(localStorage.user).userId, // TODO: change to dinerId
           restaurantId: this.liveCart.restaurantId,
           tableNo: this.tableNum,
           price: this.liveCart.totalPrice,
-          status: this.orderStatuses.sentToServer,
-          time: new Date().getTime()
+          stripeData: this.liveCart.stripeData, 
+          status: this.orderStatuses.sentToServer, // we set this here
+          time: new Date().getTime() // we set this here
         },
         items: this.liveCart.items
       }

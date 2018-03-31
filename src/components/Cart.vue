@@ -102,6 +102,9 @@
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
 import shortId from 'shortid';
 
+// Mixins
+import functions from '../mixins/functions';
+
 export default {
   name: 'Cart',
   components: {
@@ -128,7 +131,7 @@ export default {
         // eaten: 500 // May be set once the user has sent feedback
       },
       hasHadFocus: false,
-      tableNum: ''
+      tableNum: null
     }
   },
 
@@ -201,37 +204,89 @@ export default {
     },
 
     checkout() {
-      var customerEmail = '';
-      if(localStorage.getItem('user') !== null) {
-        customerEmail = JSON.parse(localStorage.user).email;
+      // Check that the token is set; we need this for the API call
+      if(localStorage.getItem('user') === null) {
+        return console.log('ERR [setRestaurantPaymentDetails]: localStorage.user not set.');
       }
 
-      // this.$checkout.close() also activeRestaurantIdilable
-      this.$checkout.open({
-        image: require('../assets/waiter.png'),
-        email: customerEmail,
-        amount: this.liveCart.totalPrice * 100, // in pence 
-        token: (token) => {
-          
-          // Send the token to the waitr api to process the payment
-          // Then listen for an update from the api
-        } 
+      if(JSON.parse(localStorage.user).token === undefined) {
+        return console.log('ERR [setRestaurantPaymentDetails]: localStorage.user.token not set.');
+      }
+
+      if(this.active.restaurantId == null) {
+        return console.log('ERR [setRestaurantPaymentDetails]: active.restaurantId not set!');
+      }
+
+      // Get the restaurant's payment details
+      this.$http.get('payment/restaurantDetails/' + this.active.restaurantId, {
+        headers: {Authorization: JSON.parse(localStorage.user).token}
+      }).then((res) => {
+
+        if(!res.body) return console.log('ERR [setRestaurantPaymentDetails]: res.body not set!');
+        if(res.body.destination == undefined || res.body.currency == undefined) {
+          return console.log('ERR [setRestaurantPaymentDetails]: res.body.destination or res.body.currency missing');
+        }
+
+        // Add them to the cart
+        if(localStorage.getItem('cart') === null) {
+          return console.log('ERR [checkout]: localStorage.cart = null');
+        }
+
+        // Add the restaurant's payment details to the cart
+        const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
+        cartObj.destination = res.body.destination;
+        cartObj.currency = res.body.currency;
+        // Convert the updated cart object back to a string and save it to local storage
+        const cartString = JSON.stringify(cartObj);
+        localStorage.cart = cartString;
+        this.$store.commit('updateCart', cartObj);
+        return true;
+
+      }).then(() => {
+
+        // Checkout
+        var customerEmail = '';
+        if(localStorage.getItem('user') !== null) {
+          customerEmail = JSON.parse(localStorage.user).email;
+        }
+
+        if(this.liveCart.currency == undefined || this.liveCart.totalPrice == undefined) {
+          return console.log('ERR [checkout]: this.liveCart missing params.');
+        }
+
+        // this.$checkout.close() also activeRestaurantIdilable
+        this.$checkout.open({
+          image: require('../assets/waiter.png'),
+          email: customerEmail,
+          currency: this.liveCart.currency,
+          amount: this.liveCart.totalPrice * 100, // in pence 
+          token: (token) => {
+
+            // Add the token to the cart (localStorage and state)
+            if(localStorage.getItem('cart') === null) {
+              return console.log('ERR [checkout]: localStorage.cart = null');
+            }
+
+            const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
+            cartObj.stripeToken = token.id;
+            cartObj.customerEmail = customerEmail;
+            // Convert the updated cart object back to a string and save it to local storage
+            const cartString = JSON.stringify(cartObj);
+            localStorage.cart = cartString;
+            this.$store.commit('updateCart', cartObj);
+            
+            // Send the order to the server (with the Stripe token for processing the payment)
+            this.placeOrder();
+            // Then listen for an update from the api
+          } 
+        });
+
+      }).catch((err) => {
+        return this.handleApiError(res);
       });
     },
 
     placeOrder() {
-      if(this.liveCart === undefined || this.liveCart === null) {
-        return console.log('ERR [placeOrder]: cart state not set.');
-      }
-
-      if(!this.liveCart.hasOwnProperty('items')) {
-        return console.log('ERR [placeOrder]: cart.items state not set.');
-      }
-
-      if(this.liveCart.items.length < 1) {
-        return console.log('ERR [placeOrder]: the cart is empty!');
-      }
-
       // Check that the token is set; we need this for sending the order to the server
       if(localStorage.getItem('user') === null) return console.log('ERR [placeOrder]: localStorage.user not set.');
       if(JSON.parse(localStorage.user).token === undefined) {
@@ -243,33 +298,70 @@ export default {
         return console.log('ERR [placeOrder]: localStorage.user.userId not set.');
       }
 
+      // Check that the cart state is set
+      if(this.liveCart === undefined || this.liveCart === null) {
+        return console.log('ERR [placeOrder]: cart state not set.');
+      }
+
+      // ACheck that all required cart-state properties are set
+      const requiredCartProps = [
+        'items', 'restaurantId', 'totalPrice', 'stripeToken', 'currency', 'destination', 'customerEmail'
+      ];
+
+      var missingParams = [];
+      for(var i = 0; i < requiredCartProps.length; i++) {
+        if(!this.liveCart.hasOwnProperty(requiredCartProps[i])) missingParams.push(requiredCartProps[i]);
+      }
+
+      if(missingParams.length > 0) {
+        return console.log('ERR [placeOrder]: cart state is missing required props: ' + missingParams);
+      }
+
+      // Check that there is at least one item in the cart state
+      if(this.liveCart.items.length < 1) return console.log('ERR [placeOrder]: the cart is empty!');
+
+      // Check that the table number is an integer (should always be enforced by the input anyway)
+      // if(!Number.isInteger(this.tableNum)) return console.log('ERR [placeOrder]: tableNum is not an integer!');
+
+      const orderId = shortId.generate();
+
+      // *TODO*: decomplicate this horrible manipulation of the order object
       // Build order object
       const order = {
         metaData: {
-          orderId: shortId.generate(),
-          // TODO: change to dinerId (update on server and in restaurant web app)
-          customerId: JSON.parse(localStorage.user).userId,
+          orderId: orderId, // we set this here
+          customerId: JSON.parse(localStorage.user).userId, // TODO: change to dinerId
           restaurantId: this.liveCart.restaurantId,
           tableNo: this.tableNum,
-          price: this.liveCart.totalPrice,
-          status: this.orderStatuses.sentToServer,
-          time: new Date().getTime()
+          price: this.liveCart.totalPrice, 
+          status: this.orderStatuses.sentToServer, // we set this here
+          time: new Date().getTime() // we set this here
+        },
+        payment: {
+          orderId: orderId, 
+          amount: this.liveCart.totalPrice * 100,
+          currency: this.liveCart.currency,
+          source: this.liveCart.stripeToken,
+          destination: this.liveCart.destination,
+          customerEmail: this.liveCart.customerEmail
         },
         items: this.liveCart.items
       }
 
-      // Send the order to the server
+      // Build order for the server, and send
       this.$socket.emit('newOrder', {
         headers: {
           token: JSON.parse(localStorage.user).token
         },
         metaData: order.metaData,
+        payment: order.payment,
         items: order.items
       });
 
-      // Add the order to the store
+      // Build order for state, and set
       const orderState = order.metaData;
       orderState.items = order.items;
+      orderState.payment = order.payment;
       this.$store.commit('setOrder', orderState);
 
       // Then set the spinner to sending order to server

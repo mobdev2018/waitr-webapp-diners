@@ -102,6 +102,9 @@
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
 import shortId from 'shortid';
 
+// Mixins
+import functions from '../mixins/functions';
+
 export default {
   name: 'Cart',
   components: {
@@ -201,43 +204,84 @@ export default {
     },
 
     checkout() {
-      var customerEmail = '';
-      if(localStorage.getItem('user') !== null) {
-        customerEmail = JSON.parse(localStorage.user).email;
+      // Check that the token is set; we need this for the API call
+      if(localStorage.getItem('user') === null) {
+        return console.log('ERR [setRestaurantPaymentDetails]: localStorage.user not set.');
       }
 
-      // this.$checkout.close() also activeRestaurantIdilable
-      this.$checkout.open({
-        image: require('../assets/waiter.png'),
-        email: customerEmail,
-        amount: this.liveCart.totalPrice * 100, // in pence 
-        token: (token) => {
+      if(JSON.parse(localStorage.user).token === undefined) {
+        return console.log('ERR [setRestaurantPaymentDetails]: localStorage.user.token not set.');
+      }
 
-          // *TODO*: we need to set the following: 
-          // order.paymentDetails = {
-          //    orderId: // to be set in placeOrder() below
-          //    destination: // this is the recipient restaurant's Stripe account ID, which will be sent by the server
-          //                    in response to the getRestaurantMenu API call, and then set in localStorage.cart/cart state
-          //    tripeToken: order.stripeToken.id
-          //    amount: // amount paid
-          //    currency: // currency of transaction
-          // }
+      if(this.active.restaurantId == null) {
+        return console.log('ERR [setRestaurantPaymentDetails]: active.restaurantId not set!');
+      }
 
-          // Add the token to the cart (localStorage and state)
-          if(localStorage.getItem('cart') === null) {
-            return console.log('ERR [checkout]: localStorage.cart = null');
-          }
-          const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
-          cartObj.stripeToken = token;
-          // Convert the updated cart object back to a string and save it to local storage
-          const cartString = JSON.stringify(cartObj);
-          localStorage.cart = cartString;
-          this.$store.commit('updateCart', cartObj);
-          
-          // Send the order to the server (with the Stripe token for processing the payment)
-          this.placeOrder();
-          // Then listen for an update from the api
-        } 
+      // Get the restaurant's payment details
+      this.$http.get('payment/restaurantDetails/' + this.active.restaurantId, {
+        headers: {Authorization: JSON.parse(localStorage.user).token}
+      }).then((res) => {
+
+        if(!res.body) return console.log('ERR [setRestaurantPaymentDetails]: res.body not set!');
+        if(res.body.destination == undefined || res.body.currency == undefined) {
+          return console.log('ERR [setRestaurantPaymentDetails]: res.body.destination or res.body.currency missing');
+        }
+
+        // Add them to the cart
+        if(localStorage.getItem('cart') === null) {
+          return console.log('ERR [checkout]: localStorage.cart = null');
+        }
+
+        // Add the restaurant's payment details to the cart
+        const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
+        cartObj.destination = res.body.destination;
+        cartObj.currency = res.body.currency;
+        // Convert the updated cart object back to a string and save it to local storage
+        const cartString = JSON.stringify(cartObj);
+        localStorage.cart = cartString;
+        this.$store.commit('updateCart', cartObj);
+        return true;
+
+      }).then(() => {
+
+        // Checkout
+        var customerEmail = '';
+        if(localStorage.getItem('user') !== null) {
+          customerEmail = JSON.parse(localStorage.user).email;
+        }
+
+        if(this.liveCart.currency == undefined || this.liveCart.totalPrice == undefined) {
+          return console.log('ERR [checkout]: this.liveCart missing params.');
+        }
+
+        // this.$checkout.close() also activeRestaurantIdilable
+        this.$checkout.open({
+          image: require('../assets/waiter.png'),
+          email: customerEmail,
+          currency: this.liveCart.currency,
+          amount: this.liveCart.totalPrice * 100, // in pence 
+          token: (token) => {
+
+            // Add the token to the cart (localStorage and state)
+            if(localStorage.getItem('cart') === null) {
+              return console.log('ERR [checkout]: localStorage.cart = null');
+            }
+
+            const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
+            cartObj.stripeToken = token.id;
+            // Convert the updated cart object back to a string and save it to local storage
+            const cartString = JSON.stringify(cartObj);
+            localStorage.cart = cartString;
+            this.$store.commit('updateCart', cartObj);
+            
+            // Send the order to the server (with the Stripe token for processing the payment)
+            this.placeOrder();
+            // Then listen for an update from the api
+          } 
+        });
+
+      }).catch((err) => {
+        return this.handleApiError(res);
       });
     },
 
@@ -260,7 +304,7 @@ export default {
 
       // ACheck that all required cart-state properties are set
       const requiredCartProps = [
-        'items', 'restaurantId', 'totalPrice', 'stripeToken'
+        'items', 'restaurantId', 'totalPrice', 'stripeToken', 'currency', 'destination'
       ];
 
       var missingParams = [];
@@ -278,11 +322,13 @@ export default {
       // Check that the table number is an integer (should always be enforced by the input anyway)
       // if(!Number.isInteger(this.tableNum)) return console.log('ERR [placeOrder]: tableNum is not an integer!');
 
+      const orderId = shortId.generate();
+
       // *TODO*: decomplicate this horrible manipulation of the order object
       // Build order object
       const order = {
         metaData: {
-          orderId: shortId.generate(), // we set this here
+          orderId: orderId, // we set this here
           customerId: JSON.parse(localStorage.user).userId, // TODO: change to dinerId
           restaurantId: this.liveCart.restaurantId,
           tableNo: this.tableNum,
@@ -290,7 +336,13 @@ export default {
           status: this.orderStatuses.sentToServer, // we set this here
           time: new Date().getTime() // we set this here
         },
-        stripeToken: this.liveCart.stripeToken,
+        payment: {
+          orderId: orderId, 
+          amount: this.liveCart.totalPrice * 100,
+          currency: this.liveCart.currency,
+          source: this.liveCart.stripeToken,
+          destination: this.liveCart.destination
+        },
         items: this.liveCart.items
       }
 
@@ -300,14 +352,14 @@ export default {
           token: JSON.parse(localStorage.user).token
         },
         metaData: order.metaData,
-        stripeToken: order.stripeToken,
+        payment: order.payment,
         items: order.items
       });
 
       // Build order for state, and set
       const orderState = order.metaData;
       orderState.items = order.items;
-      orderState.stripeToken = order.stripeToken;
+      orderState.payment = order.payment;
       this.$store.commit('setOrder', orderState);
 
       // Then set the spinner to sending order to server

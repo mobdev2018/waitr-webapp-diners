@@ -50,9 +50,10 @@
       <img src="../assets/upset.png"/>
       <p class="orderStatusMsg" id="orderRejected">Bad news! Your order has been rejected. A member of staff will be over to speak to you shortly.</p>
     </div>
+    <!-- TODO: handle paymentRejected/orderCancelled statuses -->
     <div v-if="liveOrder.status === 1000" class="orderStatusContainer">
       <img src="../assets/startup.png"/>
-      <p class="orderStatusMsg" id="orderEnRoute">Woohoo! Your order is on it's way!</p>
+      <p class="orderStatusMsg" id="orderEnRoute">Woohoo! Your order is on its way!</p>
     </div>
   </div>
 </template>

@@ -269,6 +269,7 @@ export default {
 
             const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
             cartObj.stripeToken = token.id;
+            cartObj.customerEmail = customerEmail;
             // Convert the updated cart object back to a string and save it to local storage
             const cartString = JSON.stringify(cartObj);
             localStorage.cart = cartString;
@@ -304,7 +305,7 @@ export default {
 
       // ACheck that all required cart-state properties are set
       const requiredCartProps = [
-        'items', 'restaurantId', 'totalPrice', 'stripeToken', 'currency', 'destination'
+        'items', 'restaurantId', 'totalPrice', 'stripeToken', 'currency', 'destination', 'customerEmail'
       ];
 
       var missingParams = [];
@@ -341,7 +342,8 @@ export default {
           amount: this.liveCart.totalPrice * 100,
           currency: this.liveCart.currency,
           source: this.liveCart.stripeToken,
-          destination: this.liveCart.destination
+          destination: this.liveCart.destination,
+          customerEmail: this.liveCart.customerEmail
         },
         items: this.liveCart.items
       }

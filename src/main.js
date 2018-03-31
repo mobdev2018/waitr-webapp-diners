@@ -17,7 +17,7 @@ import VueStripeCheckout from 'vue-stripe-checkout';
 // by the options in the .open(options) 
 // function.
 const options = {
-  key: 'pk_live_sQmmS5iwUEyMNL1c5CLCyMz5', // publishable key
+  key: 'pk_test_RCyQLcQj6yBVtn1fivZbVu9W', // publishable key
   name: "waitr",
   locale: 'auto',
   currency: 'GBP'

@@ -22,7 +22,7 @@
         >
         <div class="row">
           <div class="col-xs-6">
-            <p class="restaurantName">Waterlane</p>
+            <p class="restaurantName">{{restaurant.name}}</p>
           </div>
           <div class="col-xs-6">
             <p class="restaurantType"></p>

@@ -1,14 +1,5 @@
 <template>
   <div class="container">
-
-    <!-- Error -->
-    <nav v-if="error.active" class="navbar">
-      <div class="container-fluid">
-        <div class="row">
-          <p class="errorMsg col-xs-10 col-xs-offset-1">{{error.msg}}</p>
-        </div>
-      </div>
-    </nav>
     
     <!-- Login form -->
     <div id="loginFormBox" class="formBox col-xs-10 col-xs-offset-1" v-if="loginFormIsVisible">
@@ -262,18 +253,11 @@ export default {
       inputs: {
         hasFocus: '',
         hasHadFocus: []
-      },
-      error: {
-        active: false,
-        msg: ''
       }
     }
   },
 
   created () {
-    console.log(this.inputs.hasHadFocus.length);
-    console.log(this.errors);
-
     // If the user is logged in, redirect them to...    
     if(this.userIsAuthenticated) {
       this.$router.push('/restaurants');
@@ -343,18 +327,6 @@ export default {
             }
           }
         }).catch((res) => {
-          // TODO: this error message should be a separate component
-          if (res.body && res.body.errorKey) {
-            this.error.msg = res.body.userMsg;
-          } else {
-            this.error.msg = 'Oops! There was an unexpected error. Try again and if the issue persists, contact support.';
-          }
-          this.error.active = true;
-          setTimeout(() => {
-            this.error.active = false;
-            this.error.msg = '';
-          }, 5000);
-
           this.handleApiError(res);
         });
       }

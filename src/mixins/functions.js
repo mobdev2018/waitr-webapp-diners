@@ -8,12 +8,12 @@ export default {
       We will handle every API error like this, in the catch block of our promise
     **/
     handleApiError(res) {
+      const defaultMsg = 'Oops! The waiter system experienced an error - please try again. If the issue persists, contact our support team.';
       var msg;
       if(res.body && res.body.errorKey) {
-        msg = res.body.userMsg; // The API returns a user-friendly error message
-
+        msg = res.body.userMsg || defaultMsg; // The API returns a user-friendly error message
       } else {
-        msg = 'Oops! The waiter system experienced an error - please try again. If the issue persists, contact our support team.';
+        msg = defaultMsg;
         if(res.status && res.statusText) {
           // Save to server logs (once implemented)
           console.log(res.status + " " + res.statusText);
@@ -23,6 +23,7 @@ export default {
           console.log(res);
         }
       }
+      this.flash(msg, 'error');
       console.log('ERROR: ' + JSON.stringify(res.body));
     }
     

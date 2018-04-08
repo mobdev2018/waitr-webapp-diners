@@ -11,6 +11,7 @@ import config from '../config/config';
 import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
 import VueStripeCheckout from 'vue-stripe-checkout';
+import VueFlashMessage from 'vue-flash-message';
  
 // base/global options
 // these options can be overridden 
@@ -30,6 +31,7 @@ Raven
 .addPlugin(RavenVue, Vue)
 .install();
 
+// TODO: set this also upon successful login
 if(localStorage.getItem('user') !== null) {
 	Raven.setUserContext({
 		userId: JSON.parse(localStorage.user).userId || null,
@@ -43,6 +45,9 @@ Vue.http.options.root = config.apiBaseUrl;
 
 Vue.use(VeeValidate);
 Vue.use(money, {precision: 2});
+
+Vue.use(VueFlashMessage);
+require('vue-flash-message/dist/vue-flash-message.min.css');
 
 // Use Bootstrap across the application
 import jQuery from 'jquery';

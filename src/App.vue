@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <flash-message class="navbar-fixed-top"></flash-message>
     <div class="container-fluid">
       <!-- Main page content -->
       <router-view/>
@@ -81,9 +82,7 @@ export default {
   }
 
   .container-fluid {
-    padding: 0 !important;
+    padding: 20px 0px 0px 0px !important;
   }
-
-  
 
 </style>

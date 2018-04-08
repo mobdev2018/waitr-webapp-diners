@@ -108,6 +108,7 @@ export default {
 
   methods: {
     getUsersUpToDateLiveOrderFromServer() {
+      /**
       // Check that the token is set; we need this for the API call
       if(localStorage.getItem('user') === null) {
         return console.log('ERR [getUsersUpToDateLiveOrderFromServer]: localStorage.user not set.');
@@ -123,6 +124,7 @@ export default {
         return console.log('ERR: [getUsersUpToDateLiveOrderFromServer] route param orderId could not be found.');
         // Replace spinner with error message
       }
+      **/
 
       this.$http.get('order/live/'+this.$route.params.orderId, {
         headers: {Authorization: JSON.parse(localStorage.user).token}
@@ -150,9 +152,12 @@ export default {
     handleOrderStatusUpdatesFromServer() {
       this.$options.sockets['orderStatusUpdated'] = (order) => {
         // Check for issues with order status
+        /**
         if(status == undefined || !Number.isInteger(order.status)) {
           return console.log('ERR [handleOrderStatusUpdatesFromServer]: malformed order status: ' + order.status);
         }
+        **/
+        
         // Here we handle all statuses which represent a response from the restaurant (400, 999, 1000)
         for (var s in this.orderStatuses) {
          if(this.orderStatuses[s].code == order.status) {

@@ -170,6 +170,7 @@ export default {
     handleOrderStatusUpdatesFromServer() {
       this.$options.sockets['orderStatusUpdated'] = (order) => {
         // Check for issues with order status
+        /**
         if(order.status === undefined || !Number.isInteger(order.status)) {
           return console.log('ERR [handleOrderStatusUpdate]: order status: ' + order.status);
         }
@@ -178,6 +179,7 @@ export default {
         if(order.orderId === undefined) {
           return console.log('ERR [handleOrderStatusUpdate]: orderId missing!');
         }
+        **/
 
         // Update the order's status in the store
         this.$store.commit('updateOrderStatus', order);
@@ -204,6 +206,7 @@ export default {
     },
 
     checkout() {
+      /**
       // Check that the token is set; we need this for the API call
       if(localStorage.getItem('user') === null) {
         return console.log('ERR [setRestaurantPaymentDetails]: localStorage.user not set.');
@@ -216,6 +219,7 @@ export default {
       if(this.active.restaurantId == null) {
         return console.log('ERR [setRestaurantPaymentDetails]: active.restaurantId not set!');
       }
+      **/
 
       // Get the restaurant's payment details
       this.$http.get('payment/restaurantDetails/' + this.active.restaurantId, {
@@ -250,9 +254,11 @@ export default {
           customerEmail = JSON.parse(localStorage.user).email;
         }
 
+        /**
         if(this.liveCart.currency == undefined || this.liveCart.totalPrice == undefined) {
           return console.log('ERR [checkout]: this.liveCart missing params.');
         }
+        **/
 
         // this.$checkout.close() also activeRestaurantIdilable
         this.$checkout.open({
@@ -287,6 +293,7 @@ export default {
     },
 
     placeOrder() {
+      /**
       // Check that the token is set; we need this for sending the order to the server
       if(localStorage.getItem('user') === null) return console.log('ERR [placeOrder]: localStorage.user not set.');
       if(JSON.parse(localStorage.user).token === undefined) {
@@ -302,7 +309,8 @@ export default {
       if(this.liveCart === undefined || this.liveCart === null) {
         return console.log('ERR [placeOrder]: cart state not set.');
       }
-
+      **/
+      
       // ACheck that all required cart-state properties are set
       const requiredCartProps = [
         'items', 'restaurantId', 'totalPrice', 'stripeToken', 'currency', 'destination', 'customerEmail'

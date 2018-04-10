@@ -184,6 +184,7 @@ export default {
         // If status is "recievedByKitchen", we  redirect the user to the my-order page
         if(order.status == this.orderStatuses.receivedByServer) {
           // Update the order's status in the store
+          this.flash('The status of your order has changed!', 'success');
           this.$store.commit('updateOrderStatus', order);
           
           // Reset the user's cart

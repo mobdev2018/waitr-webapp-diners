@@ -46,7 +46,12 @@ Vue.http.options.root = config.apiBaseUrl;
 Vue.use(VeeValidate);
 Vue.use(money, {precision: 2});
 
-Vue.use(VueFlashMessage);
+Vue.use(VueFlashMessage, {
+  messageOptions: {
+    timeout: 5000,
+    important: true
+  }
+});
 require('vue-flash-message/dist/vue-flash-message.min.css');
 
 // Use Bootstrap across the application

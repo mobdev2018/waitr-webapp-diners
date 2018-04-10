@@ -23,6 +23,7 @@ export default {
           console.log(res);
         }
       }
+      // this.flash().destroyAll(); // prevent multiple errors displayed simultaneously
       this.flash(msg, 'error');
       console.log('ERROR: ' + JSON.stringify(res.body));
     }

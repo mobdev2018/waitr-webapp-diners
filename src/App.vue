@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <flash-message class="navbar-fixed-top"></flash-message>
     <div class="container-fluid">
+      <flash-message class="navbar-fixed-top"></flash-message>
       <!-- Main page content -->
       <router-view/>
       <navbar v-if="$route.path != '/'"></navbar>
@@ -82,7 +82,14 @@ export default {
   }
 
   .container-fluid {
-    padding: 20px 0px 0px 0px !important;
+    padding: 0px !important;
+  }
+
+  /**
+    Prevent overlap of flash message
+  **/
+  body { 
+    padding-top: 50px; 
   }
 
 </style>

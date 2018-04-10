@@ -14,47 +14,53 @@
       </p>
     </div>
 
-    <div v-if="liveOrder.status === 100 || liveOrder.status === 200">
-      <div class="loading">
-        <clip-loader  
-          :color="loading.spinnerColor" 
-          :size="loading.spinnerSize"
-        >
-        </clip-loader>
-        <p 
-          class="loadingMsg">
-          Your order is being sent to the restaurant! Sit tight...
-        </p>
+    <div class="container" v-else>
+      <div v-if="liveOrder.status === 100 || liveOrder.status === 200">
+        <div class="loading">
+          <clip-loader  
+            :color="loading.spinnerColor" 
+            :size="loading.spinnerSize"
+          >
+          </clip-loader>
+          <p 
+            class="loadingMsg">
+            Your order has reached the server and is being sent to the restaurant! Sit tight...
+          </p>
+        </div>
       </div>
+
+      <div v-if="liveOrder.status === 300">
+        <div class="loading">
+          <clip-loader  
+            :color="loading.spinnerColor" 
+            :size="loading.spinnerSize"
+          >
+          </clip-loader>
+          <p 
+            class="loadingMsg">
+            The restaurant has received your order! We'll let you know as soon as they respond.
+          </p>
+        </div>
+      </div>
+
+      <div v-if="liveOrder.status === 400" class="orderStatusContainer">
+        <img src="../assets/confetti.png"/>
+        <p class="orderStatusMsg" id="orderAccepted">Woohoo! Your order has been accepted. We'll let you know when it's on its way.</p>
+      </div>
+
+      <div v-if="liveOrder.status === 999" class="orderStatusContainer">
+        <img src="../assets/upset.png"/>
+        <p class="orderStatusMsg" id="orderRejected">Bad news! Your order has been rejected. A member of staff will be over to speak to you shortly.</p>
+      </div>
+
+      <!-- TODO: handle paymentRejected/orderCancelled statuses -->
+      <div v-if="liveOrder.status === 1000" class="orderStatusContainer">
+        <img src="../assets/startup.png"/>
+        <p class="orderStatusMsg" id="orderEnRoute">Woohoo! Your order is on its way!</p>
+      </div>
+      
     </div>
 
-    <div v-if="liveOrder.status === 300">
-      <div class="loading">
-        <clip-loader  
-          :color="loading.spinnerColor" 
-          :size="loading.spinnerSize"
-        >
-        </clip-loader>
-        <p 
-          class="loadingMsg">
-          The restaurant has received your order! We'll let you know as soon as they respond.
-        </p>
-      </div>
-    </div>
-
-    <div v-if="liveOrder.status === 400" class="orderStatusContainer">
-      <img src="../assets/confetti.png"/>
-      <p class="orderStatusMsg" id="orderAccepted">Woohoo! Your order has been accepted. We'll let you know when it's on its way.</p>
-    </div>
-    <div v-if="liveOrder.status === 999" class="orderStatusContainer">
-      <img src="../assets/upset.png"/>
-      <p class="orderStatusMsg" id="orderRejected">Bad news! Your order has been rejected. A member of staff will be over to speak to you shortly.</p>
-    </div>
-    <!-- TODO: handle paymentRejected/orderCancelled statuses -->
-    <div v-if="liveOrder.status === 1000" class="orderStatusContainer">
-      <img src="../assets/startup.png"/>
-      <p class="orderStatusMsg" id="orderEnRoute">Woohoo! Your order is on its way!</p>
-    </div>
   </div>
 </template>
 
@@ -99,11 +105,11 @@ export default {
   },
 
   created () {
-    // Call API for the user's live order
-    this.getUsersUpToDateLiveOrderFromServer();
-
     // Listen for updates to the order's status
     this.handleOrderStatusUpdatesFromServer();
+
+    // Call API for the user's live order
+    this.getUsersUpToDateLiveOrderFromServer();
   },
 
   methods: {

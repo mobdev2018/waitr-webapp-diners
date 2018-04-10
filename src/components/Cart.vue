@@ -181,24 +181,20 @@ export default {
         }
         **/
 
-        // Update the order's status in the store
-        this.$store.commit('updateOrderStatus', order);
-
         // If status is "recievedByKitchen", we  redirect the user to the my-order page
         if(order.status == this.orderStatuses.receivedByServer) {
-          this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
+          // Update the order's status in the store
+          this.$store.commit('updateOrderStatus', order);
           
           // Reset the user's cart
           localStorage.removeItem('cart');
           this.$store.commit('resetCart');
 
           // Delay the redirection for a short time
-          window.setInterval(() => {
-            this.loading.msg = ''
-            this.loading.still = false;
-            this.$router.push({ name: 'MyOrder', params: {orderId: order.orderId} });
-            return true;
-          }, 2500);
+          this.loading.msg = ''
+          this.loading.still = false;
+          this.$router.push({ name: 'MyOrder', params: {orderId: order.orderId} });
+          return true;
         }
         // TODO: log error if error is unhandled
 

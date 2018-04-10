@@ -28,10 +28,3 @@ module.exports.money = {
 	precision: 2,
 	masked: false
 }
-
-module.exports.stripeOpts = {
-  key: 'pk_test_RCyQLcQj6yBVtn1fivZbVu9W', // publishable key
-  name: "waitr",
-  locale: 'auto',
-  currency: 'GBP'
-}

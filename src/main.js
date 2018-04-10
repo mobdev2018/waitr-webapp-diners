@@ -17,15 +17,8 @@ import VueFlashMessage from 'vue-flash-message';
 // these options can be overridden 
 // by the options in the .open(options) 
 // function.
-// const options = config.stripeOpts;
-const options = {
-  key: 'pk_test_RCyQLcQj6yBVtn1fivZbVu9W', // publishable key
-  name: "waitr",
-  locale: 'auto',
-  currency: 'GBP'
-}
  
-Vue.use(VueStripeCheckout, options);
+Vue.use(VueStripeCheckout, require('../config/stripe'));
 
 Raven
 .config('https://99c74c7fc24f4dd68777c346ed28f946@sentry.io/692049')

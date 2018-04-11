@@ -58,7 +58,7 @@
         <img src="../assets/startup.png"/>
         <p class="orderStatusMsg" id="orderEnRoute">Woohoo! Your order is on its way!</p>
       </div>
-      
+
     </div>
 
   </div>
@@ -167,6 +167,7 @@ export default {
         // Here we handle all statuses which represent a response from the restaurant (400, 999, 1000)
         for (var s in this.orderStatuses) {
          if(this.orderStatuses[s].code == order.status) {
+            this.flash('The status of your order has changed!', 'success');
             this.$store.commit('updateOrderStatus', order);
             return true;
          }

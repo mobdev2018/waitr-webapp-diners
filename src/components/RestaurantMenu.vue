@@ -301,14 +301,11 @@ export default {
         return console.log('ERR [removeItemFromCart]: cart.items array from localStorage empty.');
         // Replace spinner with error message
       }
-
-      // First check that the cart actually contains at least one instance of this particular item
-      const index = cartObj.items.findIndex(i => i.itemId == sItem.itemId);
-      if(index === -1) { 
-        return  console.log('ERR [removeItemFromCart]: cart.items does not contain that item!'); 
-        // Replace spinner with error message
-      }
+      
       **/
+      // First check that the cart actually contains at least one instance of this particular item
+      const cartObj = JSON.parse(localStorage.cart);
+      const index = cartObj.items.findIndex(i => i.itemId == sItem.itemId);
 
       // Remove the item from the cart
       cartObj.items.splice(index, 1);

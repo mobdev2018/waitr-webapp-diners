@@ -3,12 +3,12 @@
   <div class="container">
 
     <div class="loading" v-if="loading.still">
-      <clip-loader  
-        :color="loading.spinnerColor" 
+      <clip-loader
+        :color="loading.spinnerColor"
         :size="loading.spinnerSize"
       >
       </clip-loader>
-      <p 
+      <p
         class="loadingMsg">
         {{loading.msg}}
       </p>
@@ -16,12 +16,12 @@
 
     <div v-if="liveOrder.status === 100 || liveOrder.status === 200">
       <div class="loading">
-        <clip-loader  
-          :color="loading.spinnerColor" 
+        <clip-loader
+          :color="loading.spinnerColor"
           :size="loading.spinnerSize"
         >
         </clip-loader>
-        <p 
+        <p
           class="loadingMsg">
           Your order is being sent to the restaurant! Sit tight...
         </p>
@@ -30,12 +30,12 @@
 
     <div v-if="liveOrder.status === 300">
       <div class="loading">
-        <clip-loader  
-          :color="loading.spinnerColor" 
+        <clip-loader
+          :color="loading.spinnerColor"
           :size="loading.spinnerSize"
         >
         </clip-loader>
-        <p 
+        <p
           class="loadingMsg">
           The restaurant has received your order! We'll let you know as soon as they respond.
         </p>
@@ -157,7 +157,7 @@ export default {
           return console.log('ERR [handleOrderStatusUpdatesFromServer]: malformed order status: ' + order.status);
         }
         **/
-        
+
         // Here we handle all statuses which represent a response from the restaurant (400, 999, 1000)
         for (var s in this.orderStatuses) {
          if(this.orderStatuses[s].code == order.status) {
@@ -214,7 +214,7 @@ export default {
   }
 
   img {
-    height: 150px;
+    height: 100px;
     width: auto;
   }
 
@@ -228,7 +228,7 @@ export default {
   .orderStatusMsg {
     margin-top: 15px;
     color: #006DF0;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
   }
 
@@ -242,6 +242,16 @@ export default {
 
   #orderRejected {
     color: #e68a00 !important;
+  }
+
+  @media (min-width: 515px) {
+    img {
+      height: 150px;
+      width: auto;
+    }
+    .orderStatusMsg {
+      font-size: 16px;
+    }
   }
 
 </style>

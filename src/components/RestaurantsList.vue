@@ -2,8 +2,8 @@
   <div class="container">
 
     <div class="loading" v-if="loading.still">
-      <clip-loader  
-        :color="loading.spinnerColor" 
+      <clip-loader
+        :color="loading.spinnerColor"
         :size="loading.spinnerSize"
       >
       </clip-loader>
@@ -16,12 +16,12 @@
       -->
     <div class="list-group" v-else>
       <div class="list-group-item flex-column align-items-start" v-for="restaurant in restaurants">
-        <div 
+        <div
           class="d-flex w-100 justify-content-between"
           v-on:click="navigateToMenu(restaurant.restaurantId, restaurant.menus[0].menuId)"
         >
         <div class="row">
-          <div class="col-xs-6">
+          <div class="col-xs-12 col-sm-6">
             <p class="restaurantName">{{restaurant.name}}</p>
           </div>
           <div class="col-xs-6">
@@ -60,7 +60,7 @@ export default {
     'clip-loader': ClipLoader
   },
   mixins: [functions],
-  
+
   data() {
     return {
       restaurants: [],
@@ -75,7 +75,7 @@ export default {
 
   created () {
     this.redirectToMenu();
-    
+
     // If the user has items in his cart, remove the cart completely if he vists the restaurants list
     if(localStorage.getItem('cart') !== null) {
       localStorage.removeItem('cart');
@@ -100,15 +100,15 @@ export default {
     redirectToMenu() {
       if(this.active.restaurantId !== null && this.active.menuId !== null) {
         this.$router.push(
-          { name: 'RestaurantMenu', 
+          { name: 'RestaurantMenu',
             params: {
               restaurantId: this.active.restaurantId,
               menuId: this.active.menuId
-            } 
+            }
           }
         );
       }
-    }, 
+    },
 
     navigateToMenu(restaurantId, menuId) {
       this.$router.push( { name: 'RestaurantMenu', params: { restaurantId, menuId } });
@@ -149,6 +149,14 @@ export default {
     color: #006DF0;
   }
 
+  .container-fluid {
+    padding: 0;
+  }
+
+  .container {
+    padding: 0 10px;
+  }
+
   .list-group {
     margin-bottom: 100px !important;
   }
@@ -162,12 +170,33 @@ export default {
   .restaurantName {
     font-weight: bold;
     float: left;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .restaurantTown {
     float: left;
     font-size: 12px;
   }
+
+  /* Media queries */
+
+  @media (min-width: 450px) {
+    .restaurantName {
+      font-size: 16px;
+    }
+    .restaurantTown {
+      font-size: 14px;
+    }
+  }
+
+  @media (min-width: 600px) {
+    .container-fluid {
+      padding: 0 15px;
+    }
+    .container {
+      padding: 0 15px;
+    }
+  }
+
 
 </style>

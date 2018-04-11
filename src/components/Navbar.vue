@@ -88,5 +88,29 @@ export default {
     cursor: pointer;
   }
 
+  .navItem img {
+    width: 24px;
+  }
+
+  .navItem p {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  .container-fluid {
+    padding: 8px 0 0 0;
+  }
+
+  @media (min-width: 515px) {
+    .navItem img {
+      width: auto;
+    }
+    .navItem p {
+      font-size: 14px;
+    }
+    .container-fluid {
+      padding: 20px 0 0 0;
+    }
+  }
 
 </style>

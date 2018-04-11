@@ -82,7 +82,13 @@ export default {
   }
 
   .container-fluid {
-    padding: 20px 0px 0px 0px !important;
+    padding: 0;
+  }
+
+  @media (min-width: 515px) {
+    .container-fluid {
+      padding: 20px 0px 0px 0px;
+    }
   }
 
 </style>

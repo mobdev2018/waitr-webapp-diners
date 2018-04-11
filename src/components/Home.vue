@@ -1,9 +1,8 @@
 <template>
   <div class="container">
-    
+
     <!-- Login form -->
-    <div id="loginFormBox" class="formBox col-xs-10 col-xs-offset-1" v-if="loginFormIsVisible">
-      <img src="../assets/waiter.png" />
+    <div id="loginFormBox" class="formBox col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" v-if="loginFormIsVisible">
       <h1 class="formType">Log in</h1>
       <form id="loginForm" v-on:keyup.enter="logUserIn()">
         <input
@@ -46,7 +45,7 @@
       </form>
     </div>
 
-    <div id="signupFormBox" class="formBox col-xs-8 col-xs-offset-2" v-else>
+    <div id="signupFormBox" class="formBox col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" v-else>
       <!-- Registration form -->
       <div class="row">
         <h1 class="formType">Create an account</h1>
@@ -258,7 +257,7 @@ export default {
   },
 
   created () {
-    // If the user is logged in, redirect them to...    
+    // If the user is logged in, redirect them to...
     if(this.userIsAuthenticated) {
       this.$router.push('/restaurants');
     }
@@ -384,6 +383,32 @@ export default {
     src: url("../fonts/grotesque.otf");
   }
 
+  .container {
+    background-image: url('../assets/restaurant.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    margin-top: -50px !important;
+    padding: 0 10px;
+    width: 100% !important;
+  }
+
+  #loginFormBox, #signupFormBox {
+    background: rgba(0, 0, 0, 0.7);
+    min-height: 390px;
+    height: 70vh;
+    margin-top: 15vh;
+
+  }
+
+  #signupFormBox {
+    padding-top: 25px;
+  }
+
+  #loginFormBox {
+    padding-top: 40px;
+  }
+
   .formBottom {
     margin-top: 10px;
   }
@@ -423,6 +448,7 @@ export default {
 
   h1, input {
     font-family: "grotesque", Helvetica, sans-serif;
+    color: #fff;
   }
 
   form {
@@ -440,18 +466,26 @@ export default {
     font-size: 13px;
   }
 
+  #loginFormBox input {
+    height: 35px;
+  }
+
+  #signupFormBox input {
+    height: 25px;
+  }
+
   ::-webkit-input-placeholder {
-    color: black;
     text-align: left;
+    color: #fff;
   }
   ::-moz-placeholder {
-    color: black;
+    color: #fff;
   }
   :-ms-input-placeholder {
-    color: black;
+    color: #fff;
   }
   :-moz-placeholder {
-    color: black;
+    color: #fff;
   }
 
   .input:focus {
@@ -504,12 +538,20 @@ export default {
     outline: none;
   }
 
+  button {
+    width: 90%;
+    display: block;
+    margin: 0 auto;
+    height: 40px;
+  }
+
   .formLink {
     cursor: pointer;
+    color: #fff !important;
   }
 
   .text-center {
-    color: black;
+    color: #fff;
   }
 
   .text-center a {
@@ -537,6 +579,37 @@ export default {
   .errorMsg {
     padding-top: 10px;
     font-size: 10px;
+  }
+
+  @media (min-width: 615px) {
+    #loginFormBox, #signupFormBox {
+      padding: 0 30px !important;
+    }
+  }
+
+  @media (min-width: 515px) {
+    .container {
+      padding: 0 25px;
+    }
+    .input {
+      height: 35px;
+    }
+  }
+
+  @media (min-height: 550px) {
+    #loginFormBox, #signupFormBox {
+      height: 60vh;
+      margin-top: 20vh;
+    }
+  }
+
+  @media (min-width: 375px) and (min-height: 700px) {
+    #loginFormBox {
+      padding-top: 100px;
+    }
+    #loginFormBox input, #signupFormBox input {
+      height: 40px;
+    }
   }
 
 </style>

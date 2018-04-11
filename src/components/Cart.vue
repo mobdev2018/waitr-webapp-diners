@@ -12,7 +12,7 @@
               < Menu <!-- Add menu name -->
             </p>
 
-            <p 
+            <p
             class="link"
             v-on:click="navigate"
             v-else>
@@ -24,8 +24,8 @@
       </div>
     </nav>
     <div class="loading" v-if="loading.still">
-      <clip-loader  
-        :color="loading.spinnerColor" 
+      <clip-loader
+        :color="loading.spinnerColor"
         :size="loading.spinnerSize"
       >
       </clip-loader>
@@ -33,7 +33,7 @@
     </div>
 
     <div v-else>
-      
+
       <div v-if="liveCart.items.length > 0">
 
         <div class="jumbotron">
@@ -47,11 +47,11 @@
             </p>
 
             <div class="row">
-              <div class="col-xs-4">
-                <input 
-                  id="tableNum" 
-                  type="text" 
-                  class="form-control input-lg" 
+              <div class="col-xs-5 col-sm-4">
+                <input
+                  id="tableNum"
+                  type="text"
+                  class="form-control input-lg"
                   placeholder="Table no."
                   name="tableNum"
                   v-model="tableNum"
@@ -59,10 +59,10 @@
                   v-on:keyup="hasHadFocus = true"
                 >
               </div>
-              <div class="col-xs-8">
-                <button 
+              <div class="col-xs-7 col-sm-8">
+                <button
                   :disabled="errors.has('tableNum') || hasHadFocus === false"
-                  type="button" 
+                  type="button"
                   class="btn btn-primary btn-lg btn-block"
                   v-on:click="checkout()">
                     Go To Checkout
@@ -72,7 +72,7 @@
 
           </div>
         </div>
-        
+
         <div class="list-group">
           <div class="list-group-item flex-column align-items-start" v-for="item in liveCart.items">
             <div class="d-flex w-100 justify-content-between">
@@ -87,7 +87,7 @@
       </div>
 
       <div class="emptyCartContainer" v-else>
-        <img src="../assets/circumference.png" />
+        <img id="circumference" src="../assets/circumference.png" />
         <p class="emptyCart">Your cart is empty!</p>
       </div>
 
@@ -152,13 +152,13 @@ export default {
 
     navigate() {
       if(this.active.restaurantId !== null && this.active.menuId !== null) {
-        
+
         this.$router.push(
-          { name: 'RestaurantMenu', 
+          { name: 'RestaurantMenu',
             params: {
               restaurantId: this.active.restaurantId,
               menuId: this.active.menuId
-            } 
+            }
           }
         );
 
@@ -187,7 +187,7 @@ export default {
         // If status is "recievedByKitchen", we  redirect the user to the my-order page
         if(order.status == this.orderStatuses.receivedByServer) {
           this.loading.msg = 'Your order is being sent to the restaurant! Sit tight...';
-          
+
           // Reset the user's cart
           localStorage.removeItem('cart');
           this.$store.commit('resetCart');
@@ -265,7 +265,7 @@ export default {
           image: require('../assets/waiter.png'),
           email: customerEmail,
           currency: this.liveCart.currency,
-          amount: this.liveCart.totalPrice * 100, // in pence 
+          amount: this.liveCart.totalPrice * 100, // in pence
           token: (token) => {
 
             // Add the token to the cart (localStorage and state)
@@ -280,11 +280,11 @@ export default {
             const cartString = JSON.stringify(cartObj);
             localStorage.cart = cartString;
             this.$store.commit('updateCart', cartObj);
-            
+
             // Send the order to the server (with the Stripe token for processing the payment)
             this.placeOrder();
             // Then listen for an update from the api
-          } 
+          }
         });
 
       }).catch((err) => {
@@ -310,7 +310,7 @@ export default {
         return console.log('ERR [placeOrder]: cart state not set.');
       }
       **/
-      
+
       // ACheck that all required cart-state properties are set
       const requiredCartProps = [
         'items', 'restaurantId', 'totalPrice', 'stripeToken', 'currency', 'destination', 'customerEmail'
@@ -341,12 +341,12 @@ export default {
           customerId: JSON.parse(localStorage.user).userId, // TODO: change to dinerId
           restaurantId: this.liveCart.restaurantId,
           tableNo: this.tableNum,
-          price: this.liveCart.totalPrice, 
+          price: this.liveCart.totalPrice,
           status: this.orderStatuses.sentToServer, // we set this here
           time: new Date().getTime() // we set this here
         },
         payment: {
-          orderId: orderId, 
+          orderId: orderId,
           amount: this.liveCart.totalPrice * 100,
           currency: this.liveCart.currency,
           source: this.liveCart.stripeToken,
@@ -423,8 +423,24 @@ export default {
     color: #006DF0;
   }
 
-  img {
-    height: 150px;
+  .container-fluid {
+    padding: 0 !important;
+  }
+
+  .container {
+    padding: 0 10px;
+  }
+
+  .col-xs-5, .col-xs-7 {
+    padding: 0 10px;
+  }
+
+  p.link {
+    font-size: 12px;
+  }
+
+  #circumference {
+    height: 100px;
     width: auto;
   }
 
@@ -438,7 +454,7 @@ export default {
   .emptyCart {
     margin-top: 15px;
     color: #1aa3ff;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
   }
 
@@ -462,12 +478,12 @@ export default {
   }
 
   .itemName {
-    font-size: 16px;
+    font-size: 11px;
   }
 
   .itemPrice {
     float: right;
-    font-size: 16px;
+    font-size: 11px;
   }
 
   .list-group {
@@ -480,16 +496,18 @@ export default {
   }
 
   #orderTotalString {
-    font-size: 16px !important;
+    font-size: 14px !important;
+    line-height: 16px;
   }
 
   #totalPrice {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
   }
 
   #menuIcon {
     margin-bottom: 20px;
+    width: 100px;
   }
 
   .jumbotron {
@@ -498,7 +516,57 @@ export default {
   }
 
   #tableNum {
-    font-size: 15px;
+    font-size: 14px;
+    height: 35px;
+  }
+
+  button {
+    font-size: 14px;
+    height: 35px;
+    line-height: 14px;
+  }
+
+  /* Media queries */
+
+  @media (min-width: 515px) {
+    p.link {
+      font-size: 1em;
+    }
+    .container {
+      padding: 0 15px;
+    }
+    #circumference {
+      height: 150px;
+      width: auto;
+    }
+    .emptyCart {
+      font-size: 16px;
+    }
+    #menuIcon {
+      width: 140px;
+    }
+    #orderTotalString {
+      font-size: 16px !important;
+      line-height: 20px;
+    }
+    #totalPrice {
+      font-size: 20px;
+    }
+    #tableNum {
+      font-size: 15px;
+      height: 45px;
+    }
+    button {
+      font-size: 15px;
+      line-height: 15px;
+      height: 45px;
+    }
+    .itemName {
+      font-size: 16px;
+    }
+    .itemPrice {
+      font-size: 16px;
+    }
   }
 
 </style>

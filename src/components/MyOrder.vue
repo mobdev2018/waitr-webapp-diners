@@ -2,6 +2,22 @@
   <!-- Default loading spinner should say "Order is being sent to the restuarant" -->
   <div class="container">
 
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-12">
+            <p class="orderDetails">
+              <span id="orderPrice">
+                £{{parseFloat(liveOrder.price).toFixed(2)}} 
+                ({{liveOrder.items.length}}) | 
+              </span>
+              <span id="orderRestaurant">{{orderRestaurantName}}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </nav>
+
     <div class="loading" v-if="loading.still">
       <clip-loader  
         :color="loading.spinnerColor" 
@@ -15,6 +31,7 @@
     </div>
 
     <div class="container" v-else>
+
       <div v-if="liveOrder.status === 100 || liveOrder.status === 200">
         <div class="loading">
           <clip-loader  
@@ -100,7 +117,9 @@ export default {
           msg: 'Woohoo! Your order is on it\'s way!',
           iconPath: ''
         }
-      }
+      },
+
+      orderRestaurantName: ''
     }
   },
 
@@ -142,7 +161,7 @@ export default {
           if(res.body.order == undefined) {
             return console.log('ERR: [getUsersUpToDateLiveOrderFromServer] res.body.order undefined.');
           }
-
+          this.orderRestaurantName = res.body.restaurantName;
           this.$store.commit('setOrder', res.body.order);
           return true;
         }
@@ -251,4 +270,11 @@ export default {
     color: #e68a00 !important;
   }
 
+  .orderDetails {
+    margin-top: 15px;
+    padding-left: 15px;
+    float: center;
+    font-size: 14px;
+    color: black;
+  }
 </style>

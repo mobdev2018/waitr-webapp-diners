@@ -45,7 +45,6 @@
 // LiveKitchen connection via WebSockets
 import Vue from 'vue';
 import VueSocketio from 'vue-socket.io';
-import config from '../../config/config';
 
 // Dependencies
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
@@ -177,7 +176,6 @@ export default {
     float: left;
     font-size: 12px;
   }
-
   /* Media queries */
 
   @media (min-width: 450px) {

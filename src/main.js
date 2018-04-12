@@ -7,7 +7,7 @@ import store from './store/store';
 import vueResource from 'vue-resource';
 import VeeValidate from 'vee-validate';
 import money from 'v-money'
-import config from '../config/config';
+import settings from '../config/settings';
 import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
 import VueStripeCheckout from 'vue-stripe-checkout';
@@ -18,10 +18,15 @@ import VueFlashMessage from 'vue-flash-message';
 // by the options in the .open(options) 
 // function.
  
-Vue.use(VueStripeCheckout, require('../config/stripe'));
+Vue.use(VueStripeCheckout, {
+  key: settings.stripePubKey,
+  name: "waitr",
+  locale: 'auto',
+  currency: 'GBP'
+});
 
 Raven
-.config('https://99c74c7fc24f4dd68777c346ed28f946@sentry.io/692049')
+.config(settings.sentryUrl)
 .addPlugin(RavenVue, Vue)
 .install();
 
@@ -34,7 +39,7 @@ if(localStorage.getItem('user') !== null) {
 }
 
 Vue.use(vueResource);
-Vue.http.options.root = config.apiBaseUrl;
+Vue.http.options.root = settings.apiBaseUrl;
 
 
 Vue.use(VeeValidate);

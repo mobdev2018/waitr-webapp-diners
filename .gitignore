@@ -5,6 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 config/stripe.js
+config/settings.js
 
 # Editor directories and files
 .idea
@@ -13,3 +14,5 @@ config/stripe.js
 *.ntvs*
 *.njsproj
 *.sln
+
+

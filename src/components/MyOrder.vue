@@ -6,14 +6,17 @@
         <div class="container-fluid dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <div class="row">
             <div class="col-xs-12">
-              <p class="orderDetails">Click to see your order details</p>
+              <p class="orderDetails">Click to see details for 
+                <span style="font-weight: bold">Order {{liveOrder.orderId}}</span>
+              </p>
             </div>
           </div>
         </div>
         <ul class="dropdown-menu col-xs-12" aria-labelledby="dropdownMenu1">
-          <p style="font-weight: bold; text-align: center">The Cuban | £24.00 total</p>
+          <p style="font-weight: bold; text-align: center">
+          {{orderRestaurantName}} | £{{parseFloat(liveOrder.price).toFixed(2)}} total</p>
           <li v-for="item in liveOrder.items">
-            <a href="#" style="text-align: center">{{item.name}} | £{{parseFloat(item.price).toFixed(2)}}</a>
+            <a href="#" style="text-align: center">{{item.name}}, £{{parseFloat(item.price).toFixed(2)}}</a>
           </li>
         </ul>
       </div>

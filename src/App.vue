@@ -45,17 +45,6 @@ export default {
         this.$router.push('/');
       }
     }
-
-    // Once the user is logged in, connect to the WebSockets server
-    if(this.$route.path != '/') {
-      if(localStorage.getItem('customer') !== null) {
-        const customer = JSON.parse(localStorage.customer);
-        if(customer.hasOwnProperty('userId')) {
-          // http://host?restaurantId={restaurantId}
-          Vue.use(VueSocketio, 'http://localhost:3000?customerId='+customer.userId);
-        }
-      }
-    }
   },
 
   computed: {
@@ -82,7 +71,7 @@ export default {
   }
 
   .container-fluid {
-    padding: 0px !important;
+    padding: 0;
   }
 
   /**
@@ -90,6 +79,12 @@ export default {
   **/
   body { 
     padding-top: 50px; 
+  }
+
+  @media (min-width: 515px) {
+    .container-fluid {
+      padding: 20px 0px 0px 0px;
+    }
   }
 
 </style>

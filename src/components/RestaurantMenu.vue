@@ -7,7 +7,7 @@
           <div class="col-xs-12">
 
             <!-- Back-to-restaurants link -->
-            <p 
+            <p
             class="link backToRestaurants"
             v-on:click="backToRestaurants"
             >
@@ -15,7 +15,7 @@
             </p>
 
             <!-- Cart button -->
-            <button 
+            <button
               v-if="liveCart.items.length > 0"
               type="button"
               id="cartBtn"
@@ -38,8 +38,8 @@
 
     <!-- Loading wheel, which is hidden once the API responds to the getMenu call -->
     <div class="loading" v-if="loading.still">
-      <clip-loader  
-        :color="loading.spinnerColor" 
+      <clip-loader
+        :color="loading.spinnerColor"
         :size="loading.spinnerSize"
       >
       </clip-loader>
@@ -77,18 +77,18 @@
                       <div class="col-xs-5"><p class="itemName">{{item.name}}</p></div>
                       <div class="col-xs-3"><p class="itemPrice">£{{parseFloat(item.price).toFixed(2)}}</p></div>
                       <div class="col-xs-4">
-                        <span 
+                        <span
                           class="glyphicon glyphicon-plus-sign"
-                          v-on:click="addItemToCart(item)"  
+                          v-on:click="addItemToCart(item)"
                         ></span>
-                        <span 
+                        <span
                           v-if="itemPrevalence[item.itemId] != undefined"
                           class="itemPrevalence"
                           >{{itemPrevalence[item.itemId]}}</span>
-                        <span 
+                        <span
                           v-if="itemPrevalence[item.itemId] != undefined"
                           class="glyphicon glyphicon-minus-sign"
-                          v-on:click="removeItemFromCart(item)"  
+                          v-on:click="removeItemFromCart(item)"
                         ></span>
                       </div>
                     </div>
@@ -135,13 +135,13 @@ export default {
   created () {
     this.setActiveRestaurantAndMenu();
     /**
-      If a user has items in his cart, and then navigates to the Restaurant List, we destroy the cart object in local storage, 
+      If a user has items in his cart, and then navigates to the Restaurant List, we destroy the cart object in local storage,
       and reset its state. This is to prevent the cart from containing items from multiple menus/restaurants (!)
 
       (Later we can have multiple carts, identified by the menuId).
 
-      The following is unlikely, but if a user navigates directly from one menu to another, e.g. 
-        
+      The following is unlikely, but if a user navigates directly from one menu to another, e.g.
+
         1) User is currently on route `/r/SkxjHgNYRb/m/r1biHgNY0Z` (menu A)
         2) User enters into address bar route `/r/SkxjHgNYRb/m/xjj8sD0c9` (menu B)
 
@@ -153,7 +153,7 @@ export default {
 
   methods: {
     setActiveRestaurantAndMenu() {
-      // Keep state syncronised with localStorage; revise exactly why we use state as well as local storage, for cart and active menu 
+      // Keep state syncronised with localStorage; revise exactly why we use state as well as local storage, for cart and active menu
       /**
       if(this.$route.params.restaurantId == undefined) {
         return console.log('ERR [setActiveRestaurantAndMenu]: liveCart.restaurantId undefined!');
@@ -238,7 +238,7 @@ export default {
       const item = {
         itemId: i.itemId,
         name: i.name,
-        price: i.price 
+        price: i.price
       }
 
       // If nothing has been added to the cart yet, create it and add the first item
@@ -256,7 +256,7 @@ export default {
         const cart = {
           restaurantId: this.$route.params.restaurantId,
           menuId: this.$route.params.menuId,
-          totalPrice: parseFloat(item.price).toFixed(2), 
+          totalPrice: parseFloat(item.price).toFixed(2),
           items: [item]
         }
 
@@ -269,7 +269,7 @@ export default {
       const cartObj = JSON.parse(localStorage.cart); // First convert the string to an object, then add the new item
       cartObj.items.push(item);
       // Update total price
-      var totalPrice = parseFloat(cartObj.totalPrice) + parseFloat(item.price); 
+      var totalPrice = parseFloat(cartObj.totalPrice) + parseFloat(item.price);
       totalPrice = totalPrice.toFixed(2);
       cartObj.totalPrice = totalPrice;
       // Convert the updated cart object back to a string and save it to local storage
@@ -286,7 +286,7 @@ export default {
         // Replace spinner with error message
       }
 
-      if(localStorage.getItem('cart') == null) { 
+      if(localStorage.getItem('cart') == null) {
         return console.log('ERR [removeItemFromCart]: cart missing from locaStorage.');
         // Replace spinner with error message
       }
@@ -310,7 +310,7 @@ export default {
       // Remove the item from the cart
       cartObj.items.splice(index, 1);
       // Update the total price
-      var totalPrice = parseFloat(cartObj.totalPrice) - parseFloat(sItem.price); 
+      var totalPrice = parseFloat(cartObj.totalPrice) - parseFloat(sItem.price);
       totalPrice = totalPrice.toFixed(2);
       cartObj.totalPrice = totalPrice;
 
@@ -379,6 +379,14 @@ export default {
     color: #006DF0;
   }
 
+  .container {
+    padding: 0 8px !important;
+  }
+
+  .col-xs-5, .col-xs-4 {
+    padding: 0 8px !important;
+  }
+
   .panel-group {
     margin-top: 20px;
     margin-bottom: 100px !important;
@@ -440,6 +448,7 @@ export default {
     background: none;
     border: none;
     text-align: center;
+    font-size: 14px;
   }
 
   .categoryName:focus {
@@ -452,21 +461,23 @@ export default {
 
   .backToRestaurants {
     margin-top: 20px;
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .itemRow {
     margin-top: 10px;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .itemName {
     float: left;
+    font-size: 10px !important;
   }
 
   .itemPrice {
     float: right;
+    font-size: 10px !important;
   }
 
   .list-group-item {
@@ -476,9 +487,9 @@ export default {
 
   .link {
     margin-top: 15px;
-    padding-left: 15px;
+    padding-left: 8px !important;
     float: left;
-    font-size: 14px;
+    font-size: 14px !important;
     color: #006DF0;
     cursor: pointer;
   }
@@ -486,9 +497,9 @@ export default {
   #cartBtn {
     float: right;
     margin-left: 0px !important;
-    margin-right: 15px;
+    margin-right: 8px !important;
     font-weight: bold;
-    font-size: 14px !important;
+    font-size: 12px !important;
     margin-top: 10px;
     padding-top: 3px !important;
     padding-bottom: 4px !important;
@@ -496,9 +507,9 @@ export default {
 
   .glyphicon {
     top: 3px;
-    font-size: 12px;
-    padding-right: 3px;
-    margin-left: 10px;
+    font-size: 12px !important;
+    padding-right: 3px !important;
+    margin-left: 10px !important;
   }
 
   .glyphicon-shopping-cart {
@@ -506,9 +517,8 @@ export default {
   }
 
   .glyphicon-plus-sign, .glyphicon-minus-sign {
-    padding-right: 10px;
+    padding-right: 10px !important;
     cursor: pointer;
-    font-size: 12px;
   }
 
   #cart_numItems {
@@ -527,11 +537,40 @@ export default {
 
   .glyphicon-plus-sign, .glyphicon-minus-sign, .itemPrevalence {
     float: right;
+    font-size: 0.9em;
   }
 
   .itemPrevalence {
     padding-left: 4px;
     padding-right: 2px;
+  }
+
+  @media (min-width: 515px) {
+    .categoryName {
+      font-size: 1.1em !important;
+    }
+    .itemName {
+      font-size: 1em !important;
+    }
+    .itemPrice {
+      font-size: 1em !important;
+    }
+    .glyphicon-plus-sign, .glyphicon-minus-sign, .itemPrevalence {
+      font-size: 1em !important;
+    }
+    .backToRestaurants {
+      font-size: 14px !important;
+    }
+    #cartBtn {
+      font-size: 14px !important;
+      margin-right: 15px !important;
+    }
+    .link {
+      padding-left: 15px !important;
+    }
+    .container-fluid {
+      padding: 0 !important;
+    }
   }
 
 </style>

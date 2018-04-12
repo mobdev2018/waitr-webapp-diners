@@ -20,17 +20,18 @@
     </nav>
 
     <div class="loading" v-if="loading.still">
-      <clip-loader  
-        :color="loading.spinnerColor" 
+      <clip-loader
+        :color="loading.spinnerColor"
         :size="loading.spinnerSize"
       >
       </clip-loader>
-      <p 
+      <p
         class="loadingMsg">
         {{loading.msg}}
       </p>
     </div>
 
+<<<<<<< HEAD
     <div class="container" v-else>
 
       <div v-if="liveOrder.status === 100 || liveOrder.status === 200">
@@ -45,8 +46,22 @@
             Your order has reached the server and is being sent to the restaurant! Sit tight...
           </p>
         </div>
+=======
+    <div v-if="liveOrder.status === 100 || liveOrder.status === 200">
+      <div class="loading">
+        <clip-loader
+          :color="loading.spinnerColor"
+          :size="loading.spinnerSize"
+        >
+        </clip-loader>
+        <p
+          class="loadingMsg">
+          Your order is being sent to the restaurant! Sit tight...
+        </p>
+>>>>>>> 3d529ff8333c10bcb694eff74096a2ae1608706e
       </div>
 
+<<<<<<< HEAD
       <div v-if="liveOrder.status === 300">
         <div class="loading">
           <clip-loader  
@@ -75,6 +90,19 @@
       <div v-if="liveOrder.status === 1000" class="orderStatusContainer">
         <img src="../assets/startup.png"/>
         <p class="orderStatusMsg" id="orderEnRoute">Woohoo! Your order is on its way!</p>
+=======
+    <div v-if="liveOrder.status === 300">
+      <div class="loading">
+        <clip-loader
+          :color="loading.spinnerColor"
+          :size="loading.spinnerSize"
+        >
+        </clip-loader>
+        <p
+          class="loadingMsg">
+          The restaurant has received your order! We'll let you know as soon as they respond.
+        </p>
+>>>>>>> 3d529ff8333c10bcb694eff74096a2ae1608706e
       </div>
 
     </div>
@@ -183,7 +211,7 @@ export default {
           return console.log('ERR [handleOrderStatusUpdatesFromServer]: malformed order status: ' + order.status);
         }
         **/
-        
+
         // Here we handle all statuses which represent a response from the restaurant (400, 999, 1000)
         for (var s in this.orderStatuses) {
          if(this.orderStatuses[s].code == order.status) {
@@ -241,7 +269,7 @@ export default {
   }
 
   img {
-    height: 150px;
+    height: 100px;
     width: auto;
   }
 
@@ -255,7 +283,7 @@ export default {
   .orderStatusMsg {
     margin-top: 15px;
     color: #006DF0;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
   }
 
@@ -284,4 +312,15 @@ export default {
     padding-top: 10px;
     padding-bottom: 10px;
   }
+
+  @media (min-width: 515px) {
+    img {
+      height: 150px;
+      width: auto;
+    }
+    .orderStatusMsg {
+      font-size: 16px;
+    }
+  }
+
 </style>

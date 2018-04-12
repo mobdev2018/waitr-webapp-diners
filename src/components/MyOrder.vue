@@ -31,7 +31,6 @@
       </p>
     </div>
 
-<<<<<<< HEAD
     <div class="container" v-else>
 
       <div v-if="liveOrder.status === 100 || liveOrder.status === 200">
@@ -46,22 +45,8 @@
             Your order has reached the server and is being sent to the restaurant! Sit tight...
           </p>
         </div>
-=======
-    <div v-if="liveOrder.status === 100 || liveOrder.status === 200">
-      <div class="loading">
-        <clip-loader
-          :color="loading.spinnerColor"
-          :size="loading.spinnerSize"
-        >
-        </clip-loader>
-        <p
-          class="loadingMsg">
-          Your order is being sent to the restaurant! Sit tight...
-        </p>
->>>>>>> 3d529ff8333c10bcb694eff74096a2ae1608706e
       </div>
 
-<<<<<<< HEAD
       <div v-if="liveOrder.status === 300">
         <div class="loading">
           <clip-loader  
@@ -90,19 +75,6 @@
       <div v-if="liveOrder.status === 1000" class="orderStatusContainer">
         <img src="../assets/startup.png"/>
         <p class="orderStatusMsg" id="orderEnRoute">Woohoo! Your order is on its way!</p>
-=======
-    <div v-if="liveOrder.status === 300">
-      <div class="loading">
-        <clip-loader
-          :color="loading.spinnerColor"
-          :size="loading.spinnerSize"
-        >
-        </clip-loader>
-        <p
-          class="loadingMsg">
-          The restaurant has received your order! We'll let you know as soon as they respond.
-        </p>
->>>>>>> 3d529ff8333c10bcb694eff74096a2ae1608706e
       </div>
 
     </div>

@@ -388,7 +388,7 @@ export default {
     background-size: cover;
     background-position: center;
     min-height: 100vh;
-    margin-top: -50px !important;
+    margin-top: -70px !important;
     padding: 0 10px;
     width: 100% !important;
   }
@@ -397,8 +397,8 @@ export default {
     background: rgba(0, 0, 0, 0.7);
     min-height: 390px;
     height: 70vh;
+    max-height: 480px;
     margin-top: 15vh;
-
   }
 
   #signupFormBox {
@@ -583,7 +583,8 @@ export default {
 
   @media (min-width: 615px) {
     #loginFormBox, #signupFormBox {
-      padding: 0 30px !important;
+      padding-left: 30px !important;
+      padding-right: 30px !important;
     }
   }
 
@@ -596,19 +597,40 @@ export default {
     }
   }
 
-  @media (min-height: 550px) {
+  @media (min-height: 555px) {
     #loginFormBox, #signupFormBox {
       height: 60vh;
       margin-top: 20vh;
     }
   }
 
-  @media (min-width: 375px) and (min-height: 700px) {
-    #loginFormBox {
-      padding-top: 100px;
+  @media (max-height: 555px) {
+    #loginFormBox, #signupFormBox {
+      margin-top: 10vh;
     }
-    #loginFormBox input, #signupFormBox input {
+  }
+
+  @media (max-height: 465px) {
+    #loginFormBox, #signupFormBox {
+      margin-top: 5vh;
+    }
+  }
+
+  @media (min-height: 800px) {
+    #signupFormBox input {
       height: 40px;
+    }
+  }
+
+  @media (min-width: 375px) and (min-height: 736px) {
+    #loginFormBox input {
+      height: 40px;
+    }
+  }
+
+  @media (min-height: 640px) {
+    #loginFormBox {
+      padding-top: 80px;
     }
   }
 

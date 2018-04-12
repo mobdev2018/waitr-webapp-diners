@@ -383,11 +383,11 @@ export default {
   }
 
   .container {
-    padding: 0 8px;
+    padding: 0 8px !important;
   }
 
   .col-xs-5, .col-xs-4 {
-    padding: 0 8px;
+    padding: 0 8px !important;
   }
 
   .panel-group {
@@ -470,17 +470,17 @@ export default {
   .itemRow {
     margin-top: 10px;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .itemName {
     float: left;
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .itemPrice {
     float: right;
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .list-group-item {
@@ -490,9 +490,9 @@ export default {
 
   .link {
     margin-top: 15px;
-    padding-left: 15px;
+    padding-left: 8px !important;
     float: left;
-    font-size: 14px;
+    font-size: 14px !important;
     color: #006DF0;
     cursor: pointer;
   }
@@ -500,7 +500,7 @@ export default {
   #cartBtn {
     float: right;
     margin-left: 0px !important;
-    margin-right: 15px;
+    margin-right: 8px !important;
     font-weight: bold;
     font-size: 12px !important;
     margin-top: 10px;
@@ -510,9 +510,9 @@ export default {
 
   .glyphicon {
     top: 3px;
-    font-size: 12px;
-    padding-right: 3px;
-    margin-left: 10px;
+    font-size: 12px !important;
+    padding-right: 3px !important;
+    margin-left: 10px !important;
   }
 
   .glyphicon-shopping-cart {
@@ -520,7 +520,7 @@ export default {
   }
 
   .glyphicon-plus-sign, .glyphicon-minus-sign {
-    padding-right: 10px;
+    padding-right: 10px !important;
     cursor: pointer;
   }
 
@@ -550,22 +550,29 @@ export default {
 
   @media (min-width: 515px) {
     .categoryName {
-      font-size: 1.1em;
+      font-size: 1.1em !important;
     }
     .itemName {
-      font-size: 1em;
+      font-size: 1em !important;
     }
     .itemPrice {
-      font-size: 1em;
+      font-size: 1em !important;
     }
     .glyphicon-plus-sign, .glyphicon-minus-sign, .itemPrevalence {
-      font-size: 1em;
+      font-size: 1em !important;
     }
     .backToRestaurants {
-      font-size: 14px;
+      font-size: 14px !important;
     }
     #cartBtn {
       font-size: 14px !important;
+      margin-right: 15px !important;
+    }
+    .link {
+      padding-left: 15px !important;
+    }
+    .container-fluid {
+      padding: 0 !important;
     }
   }
 

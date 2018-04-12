@@ -1,9 +1,9 @@
 var baseUrl = ''
 
 if(process.env.NODE_ENV === 'production') {
-   baseUrl = 'https://api.waitr.live/api';
+   baseUrl = 'http://localhost:3000/api';
 } else if(process.env.NODE_ENV === 'development') {
-   baseUrl = 'https://api.waitr.live/api';
+   baseUrl = 'http://localhost:3000/api';
 }
 
 module.exports.apiBaseUrl = baseUrl;

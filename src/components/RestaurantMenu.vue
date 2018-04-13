@@ -151,17 +151,6 @@ export default {
 
   methods: {
     setActiveRestaurantAndMenu() {
-      // Keep state syncronised with localStorage; revise exactly why we use state as well as local storage, for cart and active menu
-      /**
-      if(this.$route.params.restaurantId == undefined) {
-        return console.log('ERR [setActiveRestaurantAndMenu]: liveCart.restaurantId undefined!');
-      }
-
-      if(this.$route.params.menuId == undefined) {
-        return console.log('ERR [setActiveRestaurantAndMenu]: liveCart.menuId undefined!');
-      }
-      **/
-
       localStorage.activeRestaurantId = this.$route.params.restaurantId;
       localStorage.activeMenuId = this.$route.params.menuId;
       return true;
@@ -173,12 +162,6 @@ export default {
 
       // We need to check the restaurant and menu of the cart items, against the menu (and restaurant) the user is navigating to
       const cartObj = JSON.parse(localStorage.cart);
-      /**
-      if(cartObj.restaurantId == undefined || cartObj.menuId == undefined) {
-        return console.log('ERR [manangeCartOnNavigation]: cart missing at least one param (restaurantId, menuId).');
-        // Replace spinner with error message
-      }
-      **/
 
       // If the user has navigated directly to another menu (unlikely), destroy the current cart and reset the cart state
       if(this.$route.params.restaurantId != cartObj.restaurantId || this.$route.params.menuId != cartObj.menuId) {
@@ -190,21 +173,6 @@ export default {
     },
 
     getMenuFromBackend() {
-      // Check that the token is set; we need this for the API call
-      /**
-      if(localStorage.getItem('user') === null) return console.log('ERR [getMenuFromBackend]: localStorage.user not set.');
-      if(JSON.parse(localStorage.user).token === undefined) {
-        return console.log('ERR [getMenuFromBackend]: localStorage.user.token not set.');
-        // Replace spinner with error message
-      }
-
-      // Navigation to this route includes a menuId route param, e.g. `/r/SkxjHgNYRb/m/{menuId}`
-      if(this.$route.params.menuId == undefined) {
-        return console.log('ERR: [getMenuFromBackend] route param menuId could not be found.');
-        // Replace spinner with error message
-      }
-      **/
-
       // Retrieve the menu from the API
       this.$http.get('menu/'+this.$route.params.menuId, {
         headers: {Authorization: JSON.parse(localStorage.user).token}
@@ -215,8 +183,6 @@ export default {
           this.menu = res.body.data;
           return true;
         }
-        return console.log('ERR [getMenuFromBackend]: res.status neither 200 nor 201.');
-        // Replace spinner with error message
 
       }).catch((res) => {
         this.handleApiError(res);
@@ -224,14 +190,6 @@ export default {
     },
 
     addItemToCart(i) {
-      /**
-      // Ensure that all required item properties are provided
-      if(i.itemId == undefined || i.name == undefined || i.price == undefined) {
-        return console.log('ERR: [addItemToCart] - required param (itemId, name, price) missing.');
-        // Replace spinner with error message
-      }
-      **/
-
       // Build item object (having problems with directly using the i object ?)
       const item = {
         itemId: i.itemId,
@@ -241,14 +199,6 @@ export default {
 
       // If nothing has been added to the cart yet, create it and add the first item
       if(localStorage.getItem('cart') === null) {
-
-        // We need to explicitly tie the items in the cart with the menu (and restaurant) to which they belong
-        /**
-        if(this.$route.params.restaurantId == undefined || this.$route.params.menuId == undefined) {
-          return console.log('ERR: [addItemToCart] route params restaurantId/menuId could not be found.');
-          // Replace spinner with error message
-        }
-        **/
 
         // Add the new cart object local storage, containing the first item
         const cart = {
@@ -277,30 +227,6 @@ export default {
     },
 
     removeItemFromCart(sItem) {
-      /**
-      // Ensure that all required item properties are provided
-      if(sItem.itemId == undefined || sItem.name == undefined || sItem.price == undefined) {
-        return console.log('ERR: [removeItemFroMCart] - required param (itemId, name, price) missing.');
-        // Replace spinner with error message
-      }
-
-      if(localStorage.getItem('cart') == null) {
-        return console.log('ERR [removeItemFromCart]: cart missing from locaStorage.');
-        // Replace spinner with error message
-      }
-
-      const cartObj = JSON.parse(localStorage.cart);
-      if(!cartObj.hasOwnProperty('items')) {
-        return console.log('ERR [removeItemFromCart]: cart oject from localStorage has no items array.');
-        // Replace spinner with error message
-      }
-
-      if(cartObj.items.length < 1) {
-        return console.log('ERR [removeItemFromCart]: cart.items array from localStorage empty.');
-        // Replace spinner with error message
-      }
-
-      **/
       // First check that the cart actually contains at least one instance of this particular item
       const cartObj = JSON.parse(localStorage.cart);
       const index = cartObj.items.findIndex(i => i.itemId == sItem.itemId);
@@ -322,8 +248,10 @@ export default {
 
     backToRestaurants() {
       if(localStorage.getItem('cart') !== null) {
-        const ans = confirm('This will reset your cart!');
-        if(ans == false) return false; // If the user clicks 'cancel'
+        if(this.liveCart.items.length > 0) {
+          const ans = confirm('This will reset your cart!');
+          if(ans == false) return false; // If the user clicks 'cancel'
+        }
       }
       // If the user clicks 'ok' - or the cart is not set - redirect to the restaurants list
       localStorage.removeItem('activeRestaurantId');

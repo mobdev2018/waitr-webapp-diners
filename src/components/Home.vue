@@ -53,7 +53,7 @@
       <form id="signupForm" v-on:keyup.enter="registerUser()">
         <!-- First name -->
         <input
-          :class="{'input': true, 'pass' : true, 'is-danger-input': errors.has('firstName') }"
+          :class="{'input': true, 'pass' : true }"
           name="firstName"
           type="text"
           v-bind:placeholder="form.signup.firstName.placeholder"
@@ -63,15 +63,10 @@
           v-on:blur="updateInputStatus('signup', 'firstName')"
           data-vv-as="first name"
         />
-        <span
-          class="help is-danger"
-          v-show="errors.has('firstName')">
-          {{ errors.first('firstName') }}
-        </span>
 
       <!-- Last name -->
         <input
-          :class="{'input': true, 'pass' : true, 'is-danger-input': errors.has('lastName') }"
+          :class="{'input': true, 'pass' : true }"
           name="lastName"
           type="text"
           v-bind:placeholder="form.signup.lastName.placeholder"
@@ -81,15 +76,10 @@
           v-on:blur="updateInputStatus('signup', 'lastName')"
           data-vv-as="last name"
         />
-        <span
-          class="help is-danger"
-          v-show="errors.has('lastName')">
-          {{ errors.first('lastName') }}
-        </span>
 
         <!-- Email address -->
         <input
-          :class="{'input': true, 'pass' : true, 'is-danger-input': errors.has('email') }"
+          :class="{'input': true, 'pass' : true }"
           name="email"
           type="email"
           v-bind:placeholder="form.signup.email.placeholder"
@@ -98,14 +88,9 @@
           v-on:focus="hidePlaceholder('signup', 'email')"
           v-on:blur="updateInputStatus('signup', 'email')"
         />
-        <span
-          class="help is-danger"
-          v-show="errors.has('email')">
-          {{ errors.first('email') }}
-        </span>
         <!-- Password -->
         <input
-          :class="{'input': true, 'pass' : true, 'is-danger-input': errors.has('password') }"
+          :class="{'input': true, 'pass' : true }"
           name="password"
           type="password"
           v-bind:placeholder="form.signup.password.placeholder"
@@ -114,14 +99,9 @@
           v-on:focus="hidePlaceholder('signup', 'password')"
           v-on:blur="updateInputStatus('signup', 'password')"
         />
-        <span
-          class="help is-danger"
-          v-show="errors.has('password')">
-          {{ errors.first('password') }}
-        </span>
         <!-- Confirm Password -->
         <input
-          :class="{'input': true, 'pass' : true, 'is-danger-input': errors.has('confirmPassword') && inputs.hasHadFocus.indexOf('confirmPassword') > -1}"
+          :class="{'input': true, 'pass' : true }"
           name="confirmPassword"
           type="password"
           v-bind:placeholder="form.signup.confirmPassword.placeholder"
@@ -131,17 +111,11 @@
           v-on:blur="updateInputStatus('signup', 'confirmPassword')"
           data-vv-as="confirm password"
         />
-        <span
-          class="help is-danger"
-          v-show="errors.has('confirmPassword') && inputs.hasHadFocus.indexOf('confirmPassword') > -1">
-          {{ errors.first('confirmPassword') }}
-        </span>
 
         <div class="row formBottom">
           <!-- Registration button and links -->
           <button
             class="btn btn-primary btn-md btn-block"
-            :disabled="errors.items.length > 0 || inputs.hasHadFocus.length < 5"
             v-on:click="registerUser()"
             type="button">
             Sign me up!
@@ -332,38 +306,49 @@ export default {
     },
 
     registerUser() {
-      // TODO: The form should not be submitted until each input has had focus
-      // Validate inputs (betters: if there are errors, set the button to red/unclickable using a computed property)
-      if(!this.errors.any() && this.inputs.hasHadFocus.length > 0) {
-        // Make the API call
-        this.$http.post('user/d', {
-          firstName: this.form.signup.firstName.value,
-          lastName: this.form.signup.lastName.value,
-          email: this.form.signup.email.value,
-          password: this.form.signup.password.value
-        }).then((res) => {
-          // For now just log the user in; later we will handle email verification
-          this.form.login.email.value = this.form.signup.email.value;
-          this.form.login.password.value = this.form.signup.password.value;
-
-          // Reset the signup form
-          this.logUserIn(true);
-        }).catch((res) => {
-          // TODO: this error message should be a separate component
-          if (res.body && res.body.errorKey) {
-            this.error.msg = res.body.userMsg;
-          } else {
-            this.error.msg = 'Oops! There was an unexpected error. Try again and if the issue persists, contact support.';
-          }
-          this.error.active = true;
-          setTimeout(() => {
-            this.error.active = false;
-            this.error.msg = '';
-          }, 5000);
-
-          this.handleApiError(res);
-        });
+      for(var i in this.form.signup) {
+        const fieldValue = this.form.signup[i].value.split(' ').join('');
+        if(fieldValue == '') return this.flash('Please fill in all the fields!', 'error');
       }
+
+      if(this.inputs.hasHadFocus.length < 5 ) {
+        return this.flash('Please fill in all the fields!', 'error');
+      }
+
+      if(this.errors.any()) {
+        for(var i = 0; i < this.errors.all().length; i++) {
+          return this.flash(this.errors.all()[i], 'error');
+        }
+      }
+      // Make the API call
+      this.$http.post('user/d', {
+        firstName: this.form.signup.firstName.value,
+        lastName: this.form.signup.lastName.value,
+        email: this.form.signup.email.value,
+        password: this.form.signup.password.value
+      }).then((res) => {
+        // For now just log the user in; later we will handle email verification
+        this.form.login.email.value = this.form.signup.email.value;
+        this.form.login.password.value = this.form.signup.password.value;
+
+        // Reset the signup form
+        this.logUserIn(true);
+      }).catch((res) => {
+        // TODO: this error message should be a separate component
+        if (res.body && res.body.errorKey) {
+          this.error.msg = res.body.userMsg;
+        } else {
+          this.error.msg = 'Oops! There was an unexpected error. Try again and if the issue persists, contact support.';
+        }
+        this.error.active = true;
+        setTimeout(() => {
+          this.error.active = false;
+          this.error.msg = '';
+        }, 5000);
+
+        this.handleApiError(res);
+      });
+
     }
   },
 

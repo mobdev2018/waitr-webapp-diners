@@ -1,0 +1,48 @@
+<div class="container">
+
+  <!-- 
+    *The Waitr Logo *
+  -->
+  <img src="../../assets/logo.png" class="logo-image">
+
+  <!-- 
+    *The Form*: the user can toggle between the signin and signup forms
+    by clicking the <span> elements
+  -->
+
+  <!-- *Signup Form* (shown by default) -->
+  <form id="signupForm" v-if="activeForm == 'signup'">
+    <div class="input-group">
+      <input name="firstName" placeholder="First Name"/>
+      <input name="lastName" placeholder="Last Name"/>
+      <input name="email" placeholder="Email Address"/>
+      <input name="password" type="password" placeholder="Password"/>
+      <input name="confirmPassword" type="password" placeholder="Confirm Password"/>
+    </div>
+    
+    <button type="button" v-on:click="signup()">Sign me up!</button>
+    <p class="link-view">
+      Already have an account? 
+      <span v-on:click="activeForm = 'signin'" class="link-text">
+        Sign in
+      </span>
+    </p>
+  </form>
+
+  <!-- *Signin Form* -->
+  <form id="signinForm" v-if="activeForm == 'signin'">
+    <div class="input-group">
+      <input name="email" placeholder="Email Address"/>
+      <input name="password" type="password" placeholder="Password"/>
+    </div>
+    
+    <button type="button" v-on:click="signin()">Sign me in!</button>
+    <p class="link-view">
+      Don't have an account? 
+      <span v-on:click="activeForm = 'signup'" class="link-text">
+        Sign up
+      </span>
+    </p>
+  </form>
+
+</div>

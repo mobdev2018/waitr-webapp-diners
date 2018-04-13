@@ -6,7 +6,7 @@ import RestaurantMenu from '@/components/RestaurantMenu'
 import Cart from '@/components/Cart'
 import MyOrder from '@/components/MyOrder'
 import MyOrderHistory from '@/components/MyOrderHistory'
-import Landing from '@/components/Landing'
+import Landing from '@/components/Landing/Landing'
 
 Vue.use(Router)
 

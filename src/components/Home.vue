@@ -27,7 +27,7 @@
           v-on:click="logUserIn()">
           Sign me in
         </button>
-        <div class="text-center"">
+        <div class="text-center">
             Don't have an account?
             <a
               class="formLink"

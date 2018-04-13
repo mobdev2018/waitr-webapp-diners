@@ -77,8 +77,18 @@
           <div class="list-group-item flex-column align-items-start" v-for="item in liveCart.items">
             <div class="d-flex w-100 justify-content-between">
               <div class="row itemRow">
-                <div class="col-xs-8"><p class="itemName">{{item.name}}</p></div>
-                <div class="col-xs-4"><p class="itemPrice">£{{parseFloat(item.price).toFixed(2)}}</p></div>
+                <div class="col-xs-10">
+                  <p class="itemName">
+                    {{item.name}}  
+                    <span class="itemPrice">&ensp;(£{{parseFloat(item.price).toFixed(2)}})</span>
+                  </p>
+                </div>
+                <div class="col-xs-2">
+                  <span
+                    class="glyphicon glyphicon-minus-sign"
+                    v-on:click="removeItemFromCart(item)"
+                  ></span>
+                </div>
               </div>
             </div>
           </div>
@@ -373,6 +383,26 @@ export default {
       // Then set the spinner to sending order to server
       this.loading.msg = 'Processing your order...'
       this.loading.still = true;
+    },
+
+    removeItemFromCart(sItem) {
+      // First check that the cart actually contains at least one instance of this particular item
+      const cartObj = JSON.parse(localStorage.cart);
+      const index = cartObj.items.findIndex(i => i.itemId == sItem.itemId);
+
+      // Remove the item from the cart
+      cartObj.items.splice(index, 1);
+      // Update the total price
+      var totalPrice = parseFloat(cartObj.totalPrice) - parseFloat(sItem.price);
+      totalPrice = totalPrice.toFixed(2);
+      cartObj.totalPrice = totalPrice;
+
+      // Conver the updated cart object back to a string and save it to local storage
+      const cartString = JSON.stringify(cartObj);
+      localStorage.cart = cartString;
+
+      // Update state
+      this.$store.commit('removeItemFromCart', sItem);
     }
   },
 
@@ -480,6 +510,7 @@ export default {
   }
 
   .itemPrice {
+    font-weight: normal;
     float: right;
     font-size: 11px;
   }
@@ -522,6 +553,12 @@ export default {
     font-size: 14px;
     height: 35px;
     line-height: 14px;
+  }
+
+  .glyphicon-minus-sign {
+    float: right;
+    font-size: 0.9em;
+    cursor: pointer;
   }
 
   /* Media queries */

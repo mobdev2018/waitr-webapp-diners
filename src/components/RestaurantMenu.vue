@@ -392,8 +392,8 @@ export default {
   .panel-group {
     margin-top: 20px;
     margin-bottom: 100px !important;
-    padding-right: 10px;
-    padding-left: 10px;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
   }
 
   .accordion {

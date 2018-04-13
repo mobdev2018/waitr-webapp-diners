@@ -18,7 +18,7 @@
       <input name="email" placeholder="Enter a valid email address"/>
       <input name="password" placeholder="Enter a password"/>
       <input name="confirmPassword" placeholder="Re-enter your password"/>
-      <button>Sign me in!</button>
+      <button type="button" v-on:click="signup()">Sign me up!</button>
       <p>
         Already have an account? 
         <span v-on:click="activeForm = 'signin'">
@@ -31,7 +31,7 @@
     <form id="signinForm" v-if="activeForm == 'signin'">
       <input name="email" placeholder="Enter your email address"/>
       <input name="password" placeholder="Enter your password"/>
-      <button>Sign me up!</button>
+      <button type="button" v-on:click="signin()">Sign me in!</button>
       <p>
         Don't have an account? 
         <span v-on:click="activeForm = 'signup'">
@@ -58,6 +58,12 @@ export default {
   },
 
   methods: {
+    signin() {
+      console.log('User signed in!');
+    },
+    signup() {
+      console.log('User signed up!');
+    }
   },
 
   computed: {

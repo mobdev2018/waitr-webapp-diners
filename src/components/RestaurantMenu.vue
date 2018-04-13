@@ -47,60 +47,58 @@
     </div>
 
     <!-- The Restaurant's menu -->
-    <div class="container" v-else>
-
-      <div class="panel-group" id="accordion">
-        <div v-for="category in menu.categories" class="panel panel-default">
-          <div class="panel-heading categoryPanelHeader">
-            <h4 class="panel-title">
-              <!-- Category name -->
-              <a
-                class="categoryName"
-                data-toggle="collapse"
-                data-parent="#accordion"
-                v-bind:href="'#' + category.categoryId"
-                >{{category.name}}
-              </a>
-            </h4>
-          </div>
-          <div
-            class="panel-collapse collapse"
-            v-bind:class="{'in': menu.categories.indexOf(category) == 0 && menu.categories[0].items.length > 0}"
-            v-bind:id="category.categoryId"
-          >
-            <!-- Each category is a collapsable panel, containing a table of the category's items -->
-            <div class="panel-body">
-              <div class="list-group">
-                <div class="list-group-item flex-column align-items-start" v-for="item in category.items">
-                  <div class="d-flex w-100 justify-content-between">
-                    <div class="row itemRow">
-                      <div class="col-xs-5"><p class="itemName">{{item.name}}</p></div>
-                      <div class="col-xs-3"><p class="itemPrice">£{{parseFloat(item.price).toFixed(2)}}</p></div>
-                      <div class="col-xs-4">
-                        <span
-                          class="glyphicon glyphicon-plus-sign"
-                          v-on:click="addItemToCart(item)"
-                        ></span>
-                        <span
-                          v-if="itemPrevalence[item.itemId] != undefined"
-                          class="itemPrevalence"
-                          >{{itemPrevalence[item.itemId]}}</span>
-                        <span
-                          v-if="itemPrevalence[item.itemId] != undefined"
-                          class="glyphicon glyphicon-minus-sign"
-                          v-on:click="removeItemFromCart(item)"
-                        ></span>
-                      </div>
+    <div class="panel-group" id="accordion" v-else>
+      <div v-for="category in menu.categories" class="panel panel-default">
+        <div class="panel-heading categoryPanelHeader">
+          <h4 class="panel-title">
+            <!-- Category name -->
+            <a
+              class="categoryName"
+              data-toggle="collapse"
+              data-parent="#accordion"
+              v-bind:href="'#' + category.categoryId"
+              >{{category.name}}
+            </a>
+          </h4>
+        </div>
+        <div
+          class="panel-collapse collapse"
+          v-bind:class="{'in': menu.categories.indexOf(category) == 0 && menu.categories[0].items.length > 0}"
+          v-bind:id="category.categoryId"
+        >
+          <!-- Each category is a collapsable panel, containing a table of the category's items -->
+          <div class="panel-body">
+            <div class="list-group">
+              <div class="list-group-item flex-column align-items-start" v-for="item in category.items">
+                <div class="d-flex w-100 justify-content-between">
+                  <div class="row itemRow">
+                    <div class="col-xs-5"><p class="itemName">{{item.name}}</p></div>
+                    <div class="col-xs-3"><p class="itemPrice">£{{parseFloat(item.price).toFixed(2)}}</p></div>
+                    <div class="col-xs-4">
+                      <span
+                        class="glyphicon glyphicon-plus-sign"
+                        v-on:click="addItemToCart(item)"
+                      ></span>
+                      <span
+                        v-if="itemPrevalence[item.itemId] != undefined"
+                        class="itemPrevalence"
+                        >{{itemPrevalence[item.itemId]}}</span>
+                      <span
+                        v-if="itemPrevalence[item.itemId] != undefined"
+                        class="glyphicon glyphicon-minus-sign"
+                        v-on:click="removeItemFromCart(item)"
+                      ></span>
                     </div>
                   </div>
                 </div>
               </div>
-
             </div>
+
           </div>
         </div>
       </div>
     </div>
+
   </div>
 
 </template>
@@ -394,6 +392,8 @@ export default {
   .panel-group {
     margin-top: 20px;
     margin-bottom: 100px !important;
+    padding-right: 10px;
+    padding-left: 10px;
   }
 
   .accordion {

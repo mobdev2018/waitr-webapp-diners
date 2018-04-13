@@ -6,6 +6,7 @@ import RestaurantMenu from '@/components/RestaurantMenu'
 import Cart from '@/components/Cart'
 import MyOrder from '@/components/MyOrder'
 import MyOrderHistory from '@/components/MyOrderHistory'
+import Landing from '@/components/Landing'
 
 Vue.use(Router)
 
@@ -55,6 +56,13 @@ export default new Router({
       path: '/u/:userId/orders',
       name: 'MyOrderHistory',
       component: MyOrderHistory
+    },
+
+    // New login/signup screen; once finished, it will replace the Home component
+    {
+      path: '/landing',
+      name: 'Landing',
+      component: Landing
     }
   ]
 })

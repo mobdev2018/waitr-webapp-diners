@@ -301,7 +301,7 @@ export default {
         return console.log('ERR [removeItemFromCart]: cart.items array from localStorage empty.');
         // Replace spinner with error message
       }
-      
+
       **/
       // First check that the cart actually contains at least one instance of this particular item
       const cartObj = JSON.parse(localStorage.cart);
@@ -377,6 +377,10 @@ export default {
   .loadingMsg {
     font-size: 16px;
     color: #006DF0;
+  }
+
+  .container-fluid {
+    padding: 0 !important;
   }
 
   .container {
@@ -567,9 +571,6 @@ export default {
     }
     .link {
       padding-left: 15px !important;
-    }
-    .container-fluid {
-      padding: 0 !important;
     }
   }
 

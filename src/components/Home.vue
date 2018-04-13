@@ -383,14 +383,22 @@ export default {
     src: url("../fonts/grotesque.otf");
   }
 
+  body {
+    padding-top: 0 !important;
+  }
+
   .container {
     background-image: url('../assets/restaurant.jpg');
     background-size: cover;
     background-position: center;
     min-height: 100vh;
-    margin-top: -70px !important;
+    margin-top: -100px !important;
     padding: 0 10px;
     width: 100% !important;
+  }
+
+  .container-fluid {
+    padding: 0 !important;
   }
 
   #loginFormBox, #signupFormBox {
@@ -523,7 +531,7 @@ export default {
 
   .inputButton {
     position: relative;
-    width: 40%;
+    width: 50%;
     height: 35px;
     display: block;
     margin: 15px auto 10px;

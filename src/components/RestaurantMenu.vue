@@ -73,8 +73,8 @@
                 <div class="d-flex w-100 justify-content-between">
                   <div class="row itemRow">
                     <div class="col-xs-5"><p class="itemName">{{item.name}}</p></div>
-                    <div class="col-xs-3"><p class="itemPrice">£{{parseFloat(item.price).toFixed(2)}}</p></div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-2"><p class="itemPrice">£{{parseFloat(item.price).toFixed(2)}}</p></div>
+                    <div class="col-xs-5">
                       <span
                         class="glyphicon glyphicon-plus-sign"
                         v-on:click="addItemToCart(item)"
@@ -392,8 +392,7 @@ export default {
   .panel-group {
     margin-top: 20px;
     margin-bottom: 100px !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
+    padding: 0 !important;
   }
 
   .accordion {

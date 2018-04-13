@@ -75,12 +75,6 @@ export default {
   created () {
     this.redirectToMenu();
 
-    // If the user has items in his cart, remove the cart completely if he vists the restaurants list
-    if(localStorage.getItem('cart') !== null) {
-      localStorage.removeItem('cart');
-      this.$store.commit('resetCart');
-    }
-
     // Get the list of restaurants
     this.$http.get('restaurant', {
       headers: {Authorization: JSON.parse(localStorage.user).token}
@@ -97,6 +91,8 @@ export default {
 
   methods: {
     redirectToMenu() {
+      // If the user has visited a menu in this "session", then redirect them to the menu they most recently visited
+      // No need to reset the cart; it will contain items from said menu
       if(this.active.restaurantId !== null && this.active.menuId !== null) {
         this.$router.push(
           { name: 'RestaurantMenu',
@@ -106,6 +102,13 @@ export default {
             }
           }
         );
+      } else {
+        // Otherwise, just show the restaurants list (no redirection); first check...
+        // ...If the user has items in his cart, remove the cart completely
+        if(localStorage.getItem('cart') !== null) {
+          localStorage.removeItem('cart');
+          this.$store.commit('resetCart');
+        }
       }
     },
 

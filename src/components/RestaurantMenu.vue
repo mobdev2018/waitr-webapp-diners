@@ -322,8 +322,10 @@ export default {
 
     backToRestaurants() {
       if(localStorage.getItem('cart') !== null) {
-        alert('This will reset your cart!');
+        const ans = confirm('This will reset your cart!');
+        if(ans == false) return false; // If the user clicks 'cancel'
       }
+      // If the user clicks 'ok' - or the cart is not set - redirect to the restaurants list
       localStorage.removeItem('activeRestaurantId');
       localStorage.removeItem('activeMenuId');
       this.$router.push('/restaurants');

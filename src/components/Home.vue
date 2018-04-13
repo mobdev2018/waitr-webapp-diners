@@ -387,6 +387,28 @@ export default {
     padding-top: 0 !important;
   }
 
+  /**
+    Original for Restaurants Home screen
+
+  .container {
+    display: -webkit-flex;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../assets/restaurant.jpg');
+    background-size: cover;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  **/
+
+  /**
+
+    Original 
+
   .container {
     background-image: url('../assets/restaurant.jpg');
     background-size: cover;
@@ -395,6 +417,24 @@ export default {
     margin-top: -100px !important;
     padding: 0 10px;
     width: 100% !important;
+  }
+  **/
+
+  /**
+    Combined
+  **/
+  .container {
+    display: -webkit-flex;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../assets/restaurant.jpg');
+    background-size: cover;
+    padding: 0 10px;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   .container-fluid {
@@ -575,7 +615,6 @@ export default {
 
   #switchFormString {
     padding-top: 4px;
-    font-size: 11px;
   }
 
   .navbar {

@@ -53,6 +53,13 @@ export default {
     userIsAuthenticated() {
       return this.$store.getters.isUserAuthenticated;
     }
+  },
+
+  // Remove flash message from UI when route changes
+  watch: {
+    '$route' (to, from) {
+      this.flash().destroyAll();
+    }
   }
 }
 </script>
@@ -87,6 +94,12 @@ export default {
     .container-fluid {
       padding: 20px 0px 0px 0px;
     }
+  }
+
+  .flash__message.error{
+    background-color: #e60000 !important;
+    border-color: #e60000 !important;
+    color: white;
   }
 
 </style>

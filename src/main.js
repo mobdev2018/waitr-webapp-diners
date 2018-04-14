@@ -48,7 +48,7 @@ Vue.use(money, {precision: 2});
 
 Vue.use(VueFlashMessage, {
   messageOptions: {
-    timeout: 5000,
+    timeout: 100000,
     important: true
   }
 });

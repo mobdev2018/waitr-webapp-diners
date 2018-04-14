@@ -32,7 +32,7 @@ export default {
       msg = 'Oops! '+msg;
       // TODO: Get the error, update the message, and reset the timer
       this.flash().destroyAll();
-      setTimeout(() => { this.flash(msg, 'error'); }, 50);
+      setTimeout(() => { this.flash(msg, 'error'); }, 100);
     }
 	}
 }

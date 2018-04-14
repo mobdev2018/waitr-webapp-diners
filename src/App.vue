@@ -97,7 +97,8 @@ export default {
   .flash__message.error{
     background-color: #e60000 !important;
     border-color: #e60000 !important;
-    color: white;
+    color: white !important;
+    font-size: 12px !important;
   }
 
 </style>

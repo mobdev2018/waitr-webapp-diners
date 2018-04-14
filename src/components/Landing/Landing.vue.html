@@ -16,11 +16,26 @@
   <!-- *Signup Form* (shown by default) -->
   <form id="signupForm" v-if="activeForm == 'signup'">
     <div class="input-group">
-      <input name="firstName" placeholder="First Name"/>
-      <input name="lastName" placeholder="Last Name"/>
-      <input name="email" placeholder="Email Address"/>
-      <input name="password" type="password" placeholder="Password"/>
-      <input name="confirmPassword" type="password" placeholder="Confirm Password"/>
+      <div class="input-row">
+        <icon name="user"></icon>
+        <input name="firstName" placeholder="First Name"/>
+      </div>
+      <div class="input-row">
+        <icon name="user"></icon>
+        <input name="lastName" placeholder="Last Name"/>
+      </div>
+      <div class="input-row">
+        <icon name="envelope"></icon>
+        <input name="email" placeholder="Email Address"/>
+      </div>
+      <div class="input-row">
+        <icon name="lock"></icon>
+        <input name="password" type="password" placeholder="Password"/>
+      </div>
+      <div class="input-row">
+        <icon name="lock"></icon>
+        <input name="confirmPassword" type="password" placeholder="Confirm Password"/>
+      </div>
     </div>
     
     <button type="button" v-on:click="signup()">Sign me up!</button>
@@ -35,8 +50,14 @@
   <!-- *Signin Form* -->
   <form id="signinForm" v-if="activeForm == 'signin'">
     <div class="input-group">
-      <input name="email" placeholder="Email Address"/>
-      <input name="password" type="password" placeholder="Password"/>
+      <div class="input-row">
+        <icon name="envelope"></icon>
+        <input name="email" placeholder="Email Address"/>
+      </div>
+      <div class="input-row">
+        <icon name="lock"></icon>
+        <input name="password" type="password" placeholder="Password"/>
+      </div>
     </div>
     
     <button type="button" v-on:click="signin()">Sign me in!</button>

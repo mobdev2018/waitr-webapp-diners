@@ -12,7 +12,8 @@ import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
 import VueStripeCheckout from 'vue-stripe-checkout';
 import VueFlashMessage from 'vue-flash-message';
- 
+import VueAwesome from 'vue-awesome'
+Vue.component('icon', VueAwesome)
 // base/global options
 // these options can be overridden 
 // by the options in the .open(options) 

@@ -1,0 +1,102 @@
+<div class="container">
+
+  <!-- 
+    *The Waitr Logo *
+  -->
+  <img 
+    src="../../assets/logo.png" 
+    v-bind:class="{ 'logo-image': activeForm == 'signin', 'logo-image-small': activeForm == 'signup' }"
+  >
+
+  <!-- 
+    *The Form*: the user can toggle between the signin and signup forms
+    by clicking the <span> elements
+  -->
+
+  <!-- *Signup Form* (shown by default) -->
+  <form id="signupForm" v-on:keyup.enter="signup('signup')" v-if="activeForm == 'signup'" data-vv-scope="signup">
+    <div class="input-group">
+      <div class="input-row">
+        <icon name="user"></icon>
+        <input 
+          name="firstName" 
+          placeholder="First Name" 
+          v-model="forms.signup.firstName" 
+          v-validate="{required: true, max: 100}"
+          data-vv-as="first name"
+        />
+      </div>
+      <div class="input-row">
+        <icon name="user"></icon>
+        <input 
+          name="lastName" 
+          placeholder="Last Name" 
+          v-model="forms.signup.lastName"
+          v-validate="{required: true, max: 100}"
+          data-vv-as="first name"
+        />
+      </div>
+      <div class="input-row">
+        <icon name="envelope"></icon>
+        <input 
+          name="email"
+          placeholder="Email Address" 
+          v-model="forms.signup.email"
+          v-validate="{required: true, email: true, max: 150}"
+        />
+      </div>
+      <div class="input-row">
+        <icon name="lock"></icon>
+        <input 
+          name="password" 
+          type="password" 
+          placeholder="Password" 
+          v-model="forms.signup.password"
+          v-validate="{required: true, min: 6, max: 30}"
+        />
+      </div>
+      <div class="input-row">
+        <icon name="lock"></icon>
+        <input 
+          name="confirmPassword" 
+          type="password" 
+          placeholder="Confirm Password" 
+          v-model="forms.signup.confirmPassword"
+          v-validate="'confirmed:password|required'"
+          data-vv-as="confirm password"
+        />
+      </div>
+    </div>
+    
+    <button type="button" v-on:click="signup('signup')">Sign me up!</button>
+    <p class="link-view">
+      Already have an account? 
+      <span v-on:click="activeForm = 'signin'" class="link-text">
+        Sign in
+      </span>
+    </p>
+  </form>
+
+  <!-- *Signin Form* -->
+  <form id="signinForm" v-on:keyup.enter="signin()" v-if="activeForm == 'signin'" data-vv-scope="signin">
+    <div class="input-group">
+      <div class="input-row">
+        <icon name="envelope"></icon>
+        <input name="email" placeholder="Email Address" v-model="forms.signin.email"/>
+      </div>
+      <div class="input-row">
+        <icon name="lock"></icon>
+        <input name="password" type="password" placeholder="Password" v-model="forms.signin.password"/>
+      </div>
+    </div>
+    
+    <button type="button" v-on:click="signin()">Sign me in!</button>
+    <p class="link-view">
+      Don't have an account? 
+      <span v-on:click="activeForm = 'signup'" class="link-text">
+        Sign up
+      </span>
+    </p>
+  </form>
+
+</div>

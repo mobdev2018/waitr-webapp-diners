@@ -12,7 +12,8 @@ import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
 import VueStripeCheckout from 'vue-stripe-checkout';
 import VueFlashMessage from 'vue-flash-message';
- 
+import VueAwesome from 'vue-awesome'
+Vue.component('icon', VueAwesome)
 // base/global options
 // these options can be overridden 
 // by the options in the .open(options) 
@@ -47,7 +48,7 @@ Vue.use(money, {precision: 2});
 
 Vue.use(VueFlashMessage, {
   messageOptions: {
-    timeout: 5000,
+    timeout: 3000,
     important: true
   }
 });

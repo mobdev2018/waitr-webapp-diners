@@ -26,7 +26,13 @@ export default {
       // this.flash().destroyAll(); // prevent multiple errors displayed simultaneously
       this.flash(msg, 'error');
       console.log('ERROR: ' + JSON.stringify(res.body));
+    },
+
+    displayErrorMsg(msg) {
+      msg = 'Oops! '+msg;
+      // TODO: Get the error, update the message, and reset the timer
+      this.flash().destroyAll();
+      setTimeout(() => { this.flash(msg, 'error'); }, 100);
     }
-    
 	}
 }

@@ -42,7 +42,7 @@ export default {
     if(!this.userIsAuthenticated) {
       // If the user is not logged in, redirect them to the home page when they visit any other page
       if(this.$route.path != '/') {
-        this.$router.push('/');
+          this.$router.push('/');
       }
     }
   },
@@ -50,6 +50,13 @@ export default {
   computed: {
     userIsAuthenticated() {
       return this.$store.getters.isUserAuthenticated;
+    }
+  },
+
+  // Remove flash message from UI when route changes
+  watch: {
+    '$route' (to, from) {
+      this.flash().destroyAll();
     }
   }
 }
@@ -85,6 +92,13 @@ export default {
     .container-fluid {
       padding: 20px 0px 0px 0px;
     }
+  }
+
+  .flash__message.error{
+    background-color: #e60000 !important;
+    border-color: #e60000 !important;
+    color: white !important;
+    font-size: 12px !important;
   }
 
 </style>

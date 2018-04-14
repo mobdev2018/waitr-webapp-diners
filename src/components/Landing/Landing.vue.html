@@ -3,7 +3,10 @@
   <!-- 
     *The Waitr Logo *
   -->
-  <img src="../../assets/logo1.png" class="logo-image">
+  <img 
+    src="../../assets/logo1.png" 
+    v-bind:class="{ 'logo-image': activeForm == 'signin', 'logo-image-small': activeForm == 'signup' }"
+  >
 
   <!-- 
     *The Form*: the user can toggle between the signin and signup forms

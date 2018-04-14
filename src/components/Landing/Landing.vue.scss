@@ -31,6 +31,18 @@
       height: 160px;
     }
   }
+
+  .logo-image-small {
+    height: 100px;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 36px;
+
+    @media (max-width: 576px) {
+      height: 160px;
+    }
+  }
   
   #signinForm {
     display: flex;
@@ -53,6 +65,7 @@
   .input-group {
     width: 100%;
     border: 1px solid #eee;
+    border-radius: 3px;
     
     input {
       width: 100%;
